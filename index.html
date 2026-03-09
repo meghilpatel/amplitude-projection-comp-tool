@@ -899,46 +899,37 @@ function getVCDForQuarter(date) {
   return new Date(y, 10, 15);              // Nov 15
 }
 
-// Get the next VCD strictly after a given date (used to bump France)
-function getNextVCD(date) {
-  const y = date.getFullYear();
-  const candidates = [
-    new Date(y, 1, 15), new Date(y, 4, 15),
-    new Date(y, 7, 15), new Date(y, 10, 15),
-    new Date(y+1, 1, 15)
-  ];
-  // Find first candidate strictly after date
-  return candidates.find(c => c > date);
-}
-
-// Get first VCD on or after a given date (used for non-France quarterly sequence)
+// Get first VCD on or after a given date (used for sequencing quarterly vests)
 function getVCDOnOrAfter(date) {
   const y = date.getFullYear();
   const candidates = [
     new Date(y, 1, 15), new Date(y, 4, 15),
     new Date(y, 7, 15), new Date(y, 10, 15),
-    new Date(y+1, 1, 15)
+    new Date(y+1, 1, 15), new Date(y+1, 4, 15)
   ];
   return candidates.find(c => c >= date);
 }
 
 function buildVestSchedule(startDate, isFrance) {
   const grantDate = getGrantDate(startDate);
+  let vestingStartDate;
 
-  // Step 1: Find VCD based on start month quarter
-  let vestingStartDate = getVCDForQuarter(startDate);
-
-  // Step 2: France only — if VCD is before grant date, bump to next VCD
-  if (isFrance && vestingStartDate <= grantDate) {
-    vestingStartDate = getNextVCD(grantDate);
+  if (isFrance) {
+    // France: 1-year cliff from grant date, then align to next VCD on or after cliff date
+    const cliffDate = new Date(grantDate);
+    cliffDate.setFullYear(cliffDate.getFullYear() + 1);
+    vestingStartDate = getVCDOnOrAfter(cliffDate);
+  } else {
+    // Non-France: use the VCD corresponding to the start month quarter
+    vestingStartDate = getVCDForQuarter(startDate);
   }
 
-  // Step 3: Build 12 quarterly vest dates from vestingStartDate
+  // Build 12 quarterly vest dates from vestingStartDate
   const schedule = [];
   let cur = vestingStartDate;
   while (schedule.length < 12) {
     schedule.push(new Date(cur));
-    cur = getVCDOnOrAfter(new Date(cur.getTime() + 86400001)); // next day → find next VCD
+    cur = getVCDOnOrAfter(new Date(cur.getTime() + 86400001));
   }
 
   return { grantDate, vestingStartDate, firstVest: vestingStartDate, schedule };
