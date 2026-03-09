@@ -1,128 +1,1392 @@
-￼
-Total Comp Projector
-5-Year Total Compensation Projector · Recruiter Tool · 2026 Program
-SEMI-ANNUAL BONUS QUARTERLY VESTING MULTI-CURRENCY
-⚙️
-CONFIGURE EMPLOYEE
-BASIC INFO
-Country
-                🇺🇸 United States (USD)
-                🇬🇧 United Kingdom (GBP)
-                🇨🇦 Canada (CAD)
-                🇫🇷 France (EUR)
-                🇩🇪 Germany (EUR)
-                🇦🇺 Australia (AUD)
-                🇸🇬 Singapore (SGD)
-                🇯🇵 Japan (JPY)
-                🇮🇳 India (INR)
-                🇧🇷 Brazil (BRL)
-              
-Start Date
-Job Family
-                
-                  Accounting
-                  Business Analysis
-                  Communications
-                  Content Marketing
-                  Contracts
-                  Counsel
-                  Data Architect
-                  DEI
-                  Demand Generation
-                  Executive Assistant
-                  Executive Management
-                  Financial Planning & Analysis
-                  GTM Enablement
-                  HRIS
-                  IT Security Engineering
-                  IT Support
-                  Learning & Development
-                  Machine Learning
-                  Payroll
-                  People Business Partner
-                  People Operations
-                  Platform Support
-                  Product Design
-                  Product Engineering
-                  Product Management
-                  Product Marketing
-                  Product Operations
-                  Project/Program Management
-                  Recruiting
-                  Risk Management
-                  Sales Operations
-                  Security Engineering
-                  Software Engineering
-                  Systems Architect
-                  Technical Writing
-                  Total Rewards
-                  Workplace
-                
-                
-                  Customer Engagement
-                  Customer Success
-                  Emerging Enterprise Sales
-                  Major Enterprise Sales
-                  Professional Services
-                  Renewals
-                  Sales Engineering
-                  Sales Systems Engineering
-                  SDR / Corporate Sales
-                  Strategic Enterprise Sales
-                  Strategic Partnership Alliance
-                  Velocity Sales
-                
-              
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Total Compensation Modeler</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f6fb;
+  --bg2: #eef0f7;
+  --surface: #ffffff;
+  --surface2: #f8f9fd;
+  --border: #e2e5f0;
+  --border2: #d0d4e8;
+  --accent: #0891b2;
+  --accent-light: #e0f2fe;
+  --accent2: #7c3aed;
+  --accent2-light: #ede9fe;
+  --accent3: #059669;
+  --accent3-light: #ecfdf5;
+  --warm: #d97706;
+  --warm-light: #fef3c7;
+  --text: #1a1d2e;
+  --text2: #4b5068;
+  --text3: #9297b0;
+  --salary-color: #0891b2;
+  --bonus-color: #d97706;
+  --equity-color: #7c3aed;
+  --total-color: #0f766e;
+  --conservative: #6b7280;
+  --target: #0891b2;
+  --optimistic: #059669;
+  --red: #dc2626;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 4px 16px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.06);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
 
-SALARY & BONUS
-Base Salary (Local)
-120,000
-Job Level
-                S1 → 5%
-                S2 → 5%
-                S3 → 10%
-                S4 → 10%
-                P1 → 10%
-                P2 → 10%
-                P3 → 10%
-                P4 → 15%
-                P5 → 20%
-                P6 → 25%
-                P7 → 25%
-                P8 → 30%
-                M2 → 10%
-                M3 → 15%
-                M4 → 20%
-                M5 → 25%
-                M6 → 25%
-                E7 → 30%
-              
-2026 Corporate Bonus — Semi-Annual
-H1 paid Sep 2026 (Jan–Jun) · H2 paid Mar 2027 (Jul–Dec)
-Each ≈ 50% of annual target, prorated from hire date.
-Results show 3 scenarios — company funding varies each cycle.
-Individual Performance Assumption
-              Below Expectations (0.8×)
-              Meets Expectations (1.0×)
-              Exceeds Expectations (1.2×)
-              Outstanding (1.5×)
-            
-Company funding shown as Conservative / Target / Optimistic. Past results ≠ future outcomes.
-NEW HIRE EQUITY GRANT
-Grant Value (USD)
-200000
-AMPL Share Price (USD)
-Check Nasdaq ↗
-Pre-filled with last close. Update if price has changed.
-Annual Stock Growth %
-Annual Salary Growth %
-DISPLAY SETTINGS
-Show Values In
-Local Currency
-USD
-FX Rate (Auto) LIVE
-🔒
-FX rates auto-populated daily from open.er-api.com
-▶ Calculate 5-Year Projection
-📊
-Configure employee details on the left then click Calculate to see a 5-year projection with a shareable candidate card.
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── Layout ── */
+.app { max-width: 1440px; margin: 0 auto; padding: 28px 24px; }
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-icon {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, #0891b2, #7c3aed);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(8,145,178,0.3);
+}
+.brand h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0px;
+}
+.brand p { font-size: 12px; color: var(--text3); margin-top: 1px; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.badge-blue { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(59,110,245,0.2); }
+.badge-purple { background: var(--accent2-light); color: var(--accent2); border: 1px solid rgba(124,92,252,0.2); }
+.badge-green { background: var(--accent3-light); color: var(--accent3); border: 1px solid rgba(5,150,105,0.2); }
+.badge-gray { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
+
+/* ── Card / Panel ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-header h2 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text2);
+}
+.card-header .icon { font-size: 16px; }
+.card-body { padding: 20px; }
+
+/* ── Form Elements ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.form-group { margin-bottom: 14px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+.form-row.single { grid-template-columns: 1fr; }
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 5px;
+  letter-spacing: 0.2px;
+}
+
+input, select {
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+input:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59,110,245,0.1);
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239297b0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+select optgroup { font-weight: 700; color: var(--text3); font-size: 11px; }
+
+input[type="date"] { color-scheme: light; }
+
+/* ── Toggle ── */
+.toggle-group {
+  display: flex;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 2px;
+}
+.toggle-btn {
+  flex: 1;
+  padding: 7px 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.toggle-btn.active {
+  background: white;
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Info Box ── */
+.info-box {
+  background: var(--accent-light);
+  border: 1.5px solid rgba(59,110,245,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.65;
+}
+.info-box strong { color: var(--accent); }
+.info-box.green { background: var(--accent3-light); border-color: rgba(5,150,105,0.2); }
+.info-box.green strong { color: var(--accent3); }
+
+.helper-text { font-size: 11px; color: var(--text3); margin-top: 5px; font-style: italic; }
+
+/* ── Compute Button ── */
+.compute-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #0891b2, #0369a1);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(8,145,178,0.35);
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 8px;
+  letter-spacing: 0.2px;
+}
+.compute-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+.compute-btn:active { transform: translateY(0); }
+
+/* ── Results ── */
+.results-empty {
+  padding: 72px 24px;
+  text-align: center;
+  color: var(--text3);
+}
+.results-empty .icon { font-size: 40px; margin-bottom: 14px; opacity: 0.35; }
+.results-empty p { font-size: 14px; line-height: 1.6; }
+
+/* Summary Cards */
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+.summary-card {
+  padding: 18px 16px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.summary-card:last-child { border-right: none; }
+.summary-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 5px; }
+.summary-value { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 800; line-height: 1; }
+.summary-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+/* Section within results */
+.results-section { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+.results-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 14px; }
+
+/* ── Stacked Bar Chart ── */
+.chart-wrap { }
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.chart-year-label { font-size: 11px; font-weight: 600; color: var(--text2); width: 52px; flex-shrink: 0; }
+.chart-bars { flex: 1; display: flex; height: 28px; border-radius: 6px; overflow: hidden; gap: 1px; }
+.chart-seg {
+  height: 100%;
+  transition: width 0.5s ease;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: white; overflow: hidden;
+  min-width: 2px;
+}
+.chart-total-label { font-size: 11px; font-weight: 600; color: var(--text2); width: 100px; text-align: right; flex-shrink: 0; }
+.chart-legend {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+.chart-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+/* ── Scenario pills ── */
+.spill {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 4px;
+  font-size: 9px; font-weight: 800;
+  flex-shrink: 0;
+}
+.spill-c { background: #f3f4f6; color: var(--conservative); border: 1px solid #e5e7eb; }
+.spill-t { background: var(--accent-light); color: var(--target); border: 1px solid rgba(59,110,245,0.2); }
+.spill-o { background: var(--accent3-light); color: var(--optimistic); border: 1px solid rgba(5,150,105,0.2); }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text3);
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-table tbody tr { border-bottom: 1px solid var(--bg2); transition: background 0.1s; }
+.data-table tbody tr:hover { background: var(--surface2); }
+.data-table tbody tr:last-child { border-bottom: none; }
+.data-table td { padding: 13px 14px; vertical-align: middle; }
+
+.year-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.amount { font-size: 13px; font-weight: 600; }
+.amount.salary { color: var(--salary-color); }
+.amount.bonus { color: var(--bonus-color); }
+.amount.equity { color: var(--equity-color); }
+.amount.total { color: var(--total-color); font-weight: 700; font-size: 14px; }
+.amount-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+.scenario-stack { display: flex; flex-direction: column; gap: 4px; }
+.scenario-row { display: flex; align-items: center; gap: 6px; }
+
+/* ── Vesting pills ── */
+.vest-pill {
+  display: inline-block;
+  background: var(--accent2-light);
+  color: var(--accent2);
+  border: 1px solid rgba(124,92,252,0.2);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-right: 3px;
+}
+.cliff-pill {
+  background: var(--warm-light);
+  color: var(--warm);
+  border-color: rgba(217,119,6,0.2);
+}
+
+/* ── Scenario Legend bar ── */
+.scenario-legend-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.scenario-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); }
+
+/* ── SHAREABLE CARD ── */
+.share-section {
+  padding: 20px;
+  border-top: 2px solid var(--border);
+  background: var(--bg);
+}
+.share-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+}
+.share-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text2); }
+.share-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.share-btn:hover { opacity: 0.88; }
+.share-btn.secondary {
+  background: white;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+}
+
+/* The shareable card itself */
+.candidate-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  max-width: 820px;
+  margin: 0 auto;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.card-top-bar {
+  background: linear-gradient(135deg, #0c4a6e 0%, #0891b2 45%, #7c3aed 100%);
+  padding: 28px 32px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.card-top-bar::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 160px; height: 160px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+}
+.card-top-bar::after {
+  content: '';
+  position: absolute;
+  bottom: -50px; left: 60px;
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 50%;
+}
+.card-company { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.7; margin-bottom: 6px; }
+.card-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 800; letter-spacing: 0px; position: relative; z-index: 1; }
+.card-subtitle { font-size: 13px; opacity: 0.8; margin-top: 4px; position: relative; z-index: 1; }
+
+.card-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.card-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.card-meta-label { font-size: 10px; opacity: 0.6; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; }
+.card-meta-value { font-size: 14px; font-weight: 700; }
+
+.card-body-inner { padding: 28px 32px; }
+
+/* Mini chart in card */
+.mini-chart { margin-bottom: 24px; }
+.mini-chart-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 14px; }
+.mini-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.mini-bar-year { font-size: 11px; font-weight: 700; color: var(--text2); width: 44px; flex-shrink: 0; }
+.mini-bars { flex: 1; display: flex; height: 22px; border-radius: 5px; overflow: hidden; gap: 1px; }
+.mini-seg { height: 100%; }
+.mini-total { font-size: 12px; font-weight: 700; color: var(--text); width: 90px; text-align: right; flex-shrink: 0; }
+
+/* Card summary grid */
+.card-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.card-summary-item {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+}
+.card-summary-item-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text3); margin-bottom: 4px; }
+.card-summary-item-value { font-family: 'DM Serif Display', serif; font-size: 18px; font-weight: 800; }
+.card-summary-item-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* Card table */
+.card-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.card-table thead th {
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text3);
+  border-bottom: 2px solid var(--border);
+}
+.card-table tbody td { padding: 10px; border-bottom: 1px solid var(--bg2); }
+.card-table tbody tr:last-child td { border-bottom: none; }
+.card-table tbody tr:nth-child(even) td { background: var(--bg); }
+
+.card-footer {
+  padding: 16px 32px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--text3);
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* ── Disclaimer ── */
+.disclaimer {
+  padding: 12px 20px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.7;
+}
+
+/* ── FX note ── */
+.fx-note { font-size: 11px; color: var(--text3); margin-top: 5px; font-style: italic; }
+
+/* ── Print / screenshot friendly ── */
+@media print {
+  .input-panel, .top-bar, .share-section-header { display: none !important; }
+  .candidate-card { box-shadow: none; border: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-icon" style="background:none;box-shadow:none;padding:0;width:auto">
+        <img src="https://logo.svgcdn.com/logos/amplitude.svg" alt="Amplitude" style="height:34px;width:auto;display:block" onerror="this.style.display='none'">
+      </div>
+      <div>
+        <h1>Total Comp Projector</h1>
+        <p>5-Year Total Compensation Projector · Recruiter Tool · 2026 Program</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge badge-blue">Semi-Annual Bonus</span>
+      <span class="badge badge-purple">Quarterly Vesting</span>
+      <span class="badge badge-green">Multi-Currency</span>
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- ── INPUT PANEL ── -->
+    <div class="input-panel">
+      <div class="card">
+        <div class="card-header">
+          <span class="icon">⚙️</span>
+          <h2>Configure Employee</h2>
+        </div>
+        <div class="card-body">
+
+          <!-- Basic Info -->
+          <div class="section-label">Basic Info</div>
+          <div class="form-row">
+            <div>
+              <label>Country</label>
+              <select id="country" onchange="onCountryChange()">
+                <option value="US">🇺🇸 United States (USD)</option>
+                <option value="UK">🇬🇧 United Kingdom (GBP)</option>
+                <option value="CA">🇨🇦 Canada (CAD)</option>
+                <option value="FR">🇫🇷 France (EUR)</option>
+                <option value="DE">🇩🇪 Germany (EUR)</option>
+                <option value="AU">🇦🇺 Australia (AUD)</option>
+                <option value="SG">🇸🇬 Singapore (SGD)</option>
+                <option value="JP">🇯🇵 Japan (JPY)</option>
+                <option value="IN">🇮🇳 India (INR)</option>
+                <option value="BR">🇧🇷 Brazil (BRL)</option>
+              </select>
+            </div>
+            <div>
+              <label>Start Date</label>
+              <input type="date" id="startDate" value="2026-04-01">
+            </div>
+          </div>
+          <div class="form-row single" style="margin-bottom:6px">
+            <div>
+              <label>Job Family</label>
+              <select id="jobFamily" onchange="onJobFamilyChange()">
+                <optgroup label="── Corporate Bonus (Base) ──">
+                  <option value="Accounting|base|n/a">Accounting</option>
+                  <option value="Business Analysis|base|n/a">Business Analysis</option>
+                  <option value="Communications|base|n/a">Communications</option>
+                  <option value="Content Marketing|base|n/a">Content Marketing</option>
+                  <option value="Contracts|base|n/a">Contracts</option>
+                  <option value="Counsel|base|n/a">Counsel</option>
+                  <option value="Data Architect|base|n/a">Data Architect</option>
+                  <option value="DEI|base|n/a">DEI</option>
+                  <option value="Demand Generation|base|n/a">Demand Generation</option>
+                  <option value="Executive Assistant|base|n/a">Executive Assistant</option>
+                  <option value="Executive Management|base|n/a">Executive Management</option>
+                  <option value="Financial Planning & Analysis|base|n/a">Financial Planning &amp; Analysis</option>
+                  <option value="GTM Enablement|base|n/a">GTM Enablement</option>
+                  <option value="HRIS|base|n/a">HRIS</option>
+                  <option value="IT Security Engineering|base|n/a">IT Security Engineering</option>
+                  <option value="IT Support|base|n/a">IT Support</option>
+                  <option value="Learning & Development|base|n/a">Learning &amp; Development</option>
+                  <option value="Machine Learning|base|n/a">Machine Learning</option>
+                  <option value="Payroll|base|n/a">Payroll</option>
+                  <option value="People Business Partner|base|n/a">People Business Partner</option>
+                  <option value="People Operations|base|n/a">People Operations</option>
+                  <option value="Platform Support|base|n/a">Platform Support</option>
+                  <option value="Product Design|base|n/a">Product Design</option>
+                  <option value="Product Engineering|base|n/a">Product Engineering</option>
+                  <option value="Product Management|base|n/a">Product Management</option>
+                  <option value="Product Marketing|base|n/a">Product Marketing</option>
+                  <option value="Product Operations|base|n/a">Product Operations</option>
+                  <option value="Project/Program Management|base|n/a">Project/Program Management</option>
+                  <option value="Recruiting|base|n/a" selected>Recruiting</option>
+                  <option value="Risk Management|base|n/a">Risk Management</option>
+                  <option value="Sales Operations|base|n/a">Sales Operations</option>
+                  <option value="Security Engineering|base|n/a">Security Engineering</option>
+                  <option value="Software Engineering|base|n/a">Software Engineering</option>
+                  <option value="Systems Architect|base|n/a">Systems Architect</option>
+                  <option value="Technical Writing|base|n/a">Technical Writing</option>
+                  <option value="Total Rewards|base|n/a">Total Rewards</option>
+                  <option value="Workplace|base|n/a">Workplace</option>
+                </optgroup>
+                <optgroup label="── Sales Variable (OTE) ──">
+                  <option value="Customer Engagement|ote|80/20">Customer Engagement</option>
+                  <option value="Customer Success|ote|80/20">Customer Success</option>
+                  <option value="Emerging Enterprise Sales|ote|50/50">Emerging Enterprise Sales</option>
+                  <option value="Major Enterprise Sales|ote|50/50">Major Enterprise Sales</option>
+                  <option value="Professional Services|ote|80/20">Professional Services</option>
+                  <option value="Renewals|ote|80/20">Renewals</option>
+                  <option value="Sales Engineering|ote|75/25">Sales Engineering</option>
+                  <option value="Sales Systems Engineering|ote|75/25">Sales Systems Engineering</option>
+                  <option value="SDR / Corporate Sales|ote|70/30">SDR / Corporate Sales</option>
+                  <option value="Strategic Enterprise Sales|ote|50/50">Strategic Enterprise Sales</option>
+                  <option value="Strategic Partnership Alliance|ote|70/30">Strategic Partnership Alliance</option>
+                  <option value="Velocity Sales|ote|50/50">Velocity Sales</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div id="planTypeBadge" style="margin-bottom:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span id="planTypeTag" class="badge badge-blue"></span>
+            <span id="payMixTag" style="font-size:11px;color:var(--text3)"></span>
+          </div>
+
+          <!-- Salary / OTE -->
+          <div class="section-label" id="salaryTitle">Salary & Bonus</div>
+          <div class="form-row">
+            <div>
+              <label id="baseLabel">Base Salary (Local)</label>
+              <input type="text" inputmode="numeric" id="baseSalary" placeholder="e.g. 120,000" value="120,000">
+            </div>
+            <div id="oteField" style="display:none">
+              <label>Total OTE (Local)</label>
+              <input type="text" inputmode="numeric" id="oteAmount" placeholder="e.g. 200,000" value="200,000">
+            </div>
+            <div id="bonusTierField">
+              <label>Job Level</label>
+              <select id="bonusTier">
+                <option value="0.05">S1 → 5%</option>
+                <option value="0.05">S2 → 5%</option>
+                <option value="0.10">S3 → 10%</option>
+                <option value="0.10">S4 → 10%</option>
+                <option value="0.10">P1 → 10%</option>
+                <option value="0.10">P2 → 10%</option>
+                <option value="0.10" selected>P3 → 10%</option>
+                <option value="0.15">P4 → 15%</option>
+                <option value="0.20">P5 → 20%</option>
+                <option value="0.25">P6 → 25%</option>
+                <option value="0.25">P7 → 25%</option>
+                <option value="0.30">P8 → 30%</option>
+                <option value="0.10">M2 → 10%</option>
+                <option value="0.15">M3 → 15%</option>
+                <option value="0.20">M4 → 20%</option>
+                <option value="0.25">M5 → 25%</option>
+                <option value="0.25">M6 → 25%</option>
+                <option value="0.30">E7 → 30%</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row" id="salesSplitRow" style="display:none">
+            <div>
+              <label>Pay Mix (Base/Variable)</label>
+              <select id="salesSplit">
+                <option value="0.5">50/50</option>
+                <option value="0.6">60/40</option>
+                <option value="0.7">70/30</option>
+                <option value="0.75">75/25</option>
+                <option value="0.8">80/20</option>
+              </select>
+            </div>
+            <div>
+              <label>Attainment % (Year 1)</label>
+              <input type="number" id="attainment" value="100" min="0" max="200">
+            </div>
+          </div>
+          <div id="payMixNote" style="display:none" class="helper-text"></div>
+
+          <!-- Corporate bonus info -->
+          <div id="bonusStructureBox" class="info-box" style="margin-bottom:14px">
+            <strong>2026 Corporate Bonus — Semi-Annual</strong><br>
+            H1 paid Sep 2026 (Jan–Jun) · H2 paid Mar 2027 (Jul–Dec)<br>
+            Each ≈ 50% of annual target, prorated from hire date.<br>
+            Results show 3 scenarios — company funding varies each cycle.
+          </div>
+          <div id="perfRow">
+            <label>Individual Performance Assumption</label>
+            <select id="indivPerf" style="margin-top:5px">
+              <option value="0.80">Below Expectations (0.8×)</option>
+              <option value="1.00" selected>Meets Expectations (1.0×)</option>
+              <option value="1.20">Exceeds Expectations (1.2×)</option>
+              <option value="1.50">Outstanding (1.5×)</option>
+            </select>
+            <div class="helper-text" style="margin-top:5px">Company funding shown as Conservative / Target / Optimistic. Past results ≠ future outcomes.</div>
+          </div>
+
+          <!-- Equity -->
+          <div class="section-label" style="margin-top:20px">New Hire Equity Grant</div>
+          <div class="form-row">
+            <div>
+              <label>Grant Value (USD)</label>
+              <input type="text" inputmode="numeric" id="grantValue" placeholder="e.g. 200000" value="200000">
+            </div>
+            <div>
+              <label style="display:flex;align-items:center;justify-content:space-between">
+                  <span>AMPL Share Price (USD)</span>
+                  <a href="https://www.nasdaq.com/market-activity/stocks/ampl/real-time" target="_blank" style="font-size:10px;font-weight:600;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:3px">
+                    Check Nasdaq ↗
+                  </a>
+                </label>
+              <input type="number" id="sharePrice" placeholder="e.g. 7.85" value="7.85" step="0.01">
+              <div style="font-size:10px;color:var(--text3);margin-top:4px">Pre-filled with last close. Update if price has changed.</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label>Annual Stock Growth %</label>
+              <input type="number" id="stockGrowth" value="10" min="-50" max="100">
+            </div>
+            <div>
+              <label>Annual Salary Growth %</label>
+              <input type="number" id="salaryGrowth" value="3" min="0" max="30">
+            </div>
+          </div>
+
+          <!-- Display -->
+          <div class="section-label" style="margin-top:4px">Display Settings</div>
+          <div class="form-row">
+            <div>
+              <label>Show Values In</label>
+              <div class="toggle-group">
+                <button class="toggle-btn active" id="btn-local" onclick="setCurrency('local')">Local Currency</button>
+                <button class="toggle-btn" id="btn-usd" onclick="setCurrency('usd')">USD</button>
+              </div>
+            </div>
+            <div>
+              <label id="fxLabel">FX Rate (Auto) <span id="fxBadge" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase">LIVE</span></label>
+              <input type="number" id="fxRate" value="1.00" step="0.01" readonly
+                style="background:#f3f4f6;color:var(--text3);cursor:not-allowed;border-color:var(--border);border-style:dashed">
+            </div>
+          </div>
+          <div class="fx-note" id="fxNote" style="display:flex;align-items:center;gap:5px">
+            <span>🔒</span><span>FX rates auto-populated daily from open.er-api.com</span>
+          </div>
+
+          <button class="compute-btn" onclick="compute()">▶ Calculate 5-Year Projection</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RESULTS PANEL ── -->
+    <div class="card" id="resultsPanel">
+      <div class="results-empty">
+        <div class="icon">📊</div>
+        <p>Configure employee details on the left<br>then click <strong>Calculate</strong> to see a 5-year projection<br>with a shareable candidate card.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let planType = 'corporate';
+let displayCurrency = 'local';
+
+const CURRENCY_INFO = {
+  US: { symbol: '$',  code: 'USD', defaultFX: 1.00 },
+  UK: { symbol: '£',  code: 'GBP', defaultFX: 0.79 },
+  CA: { symbol: 'C$', code: 'CAD', defaultFX: 1.36 },
+  FR: { symbol: '€',  code: 'EUR', defaultFX: 0.92 },
+  DE: { symbol: '€',  code: 'EUR', defaultFX: 0.92 },
+  AU: { symbol: 'A$', code: 'AUD', defaultFX: 1.55 },
+  SG: { symbol: 'S$', code: 'SGD', defaultFX: 1.35 },
+  JP: { symbol: '¥',  code: 'JPY', defaultFX: 149.5 },
+  IN: { symbol: '₹',  code: 'INR', defaultFX: 83.5 },
+  BR: { symbol: 'R$', code: 'BRL', defaultFX: 5.05 },
+};
+
+const SPLIT_MAP = { '50/50':0.50,'60/40':0.60,'70/30':0.70,'75/25':0.75,'80/20':0.80,'n/a':null };
+
+function onCountryChange() {
+  const country = document.getElementById('country').value;
+  const info = CURRENCY_INFO[country];
+  document.getElementById('fxRate').value = info.defaultFX.toFixed(4);
+  document.getElementById('fxLabel').textContent = `FX Rate (${info.code} per USD)`;
+  const fxNoteEl = document.getElementById('fxNote');
+  if (country === 'US') {
+    fxNoteEl.innerHTML = '<span>🔒</span><span>USD — no conversion needed</span>';
+  } else {
+    fxNoteEl.innerHTML = `<span>🔒</span><span>1 USD = <strong>${info.defaultFX}</strong> ${info.code} · auto-populated daily</span>`;
+  }
+}
+
+function onJobFamilyChange() {
+  const val = document.getElementById('jobFamily').value;
+  const [name, rangeType, payMix] = val.split('|');
+  const isOTE = rangeType === 'ote';
+  setPlanType(isOTE ? 'sales' : 'corporate');
+
+  const tag = document.getElementById('planTypeTag');
+  tag.textContent = isOTE ? '● OTE / Sales Variable' : '● Corporate Bonus Eligible';
+  tag.className = 'badge ' + (isOTE ? 'badge-purple' : 'badge-blue');
+
+  if (isOTE && payMix !== 'n/a') {
+    const splitVal = SPLIT_MAP[payMix] || 0.6;
+    document.getElementById('salesSplit').value = splitVal;
+    document.getElementById('payMixTag').textContent = `Pay Mix: ${payMix} (base/variable) — auto-set`;
+    document.getElementById('payMixNote').textContent = `Pay mix ${payMix} auto-set from job family. Override if needed.`;
+    document.getElementById('payMixNote').style.display = '';
+  } else if (isOTE) {
+    document.getElementById('payMixTag').textContent = 'Pay Mix: varies — set manually';
+    document.getElementById('payMixNote').style.display = 'none';
+  } else {
+    document.getElementById('payMixTag').textContent = 'Range Type: Base · Bonus by level';
+    document.getElementById('payMixNote').style.display = 'none';
+  }
+}
+
+function setPlanType(type) {
+  planType = type;
+  document.getElementById('oteField').style.display = type === 'sales' ? '' : 'none';
+  document.getElementById('bonusTierField').style.display = type === 'corporate' ? '' : 'none';
+  document.getElementById('salesSplitRow').style.display = type === 'sales' ? '' : 'none';
+  document.getElementById('bonusStructureBox').style.display = type === 'corporate' ? '' : 'none';
+  document.getElementById('perfRow').style.display = type === 'corporate' ? '' : 'none';
+  document.getElementById('salaryTitle').textContent = type === 'sales' ? 'OTE / Sales Variable' : 'Salary & Bonus';
+}
+
+function setCurrency(c) {
+  displayCurrency = c;
+  document.getElementById('btn-local').classList.toggle('active', c === 'local');
+  document.getElementById('btn-usd').classList.toggle('active', c === 'usd');
+}
+
+// ── Vesting ──────────────────────────────────────────────────────────────────
+function getGrantDate(startDate) {
+  const d = new Date(startDate);
+  let m = d.getMonth() + 1, y = d.getFullYear();
+  if (m > 12) { m = 1; y++; }
+  return new Date(y, m - 1, 15);
+}
+
+function getVCDOnOrAfter(date) {
+  const y = date.getFullYear();
+  const c = [new Date(y,1,15),new Date(y,4,15),new Date(y,7,15),new Date(y,10,15),new Date(y+1,1,15)];
+  return c.find(x => x >= date);
+}
+
+function getFirstVestDate(grantDate, isFrance) {
+  if (!isFrance) return getVCDOnOrAfter(grantDate);
+  const cliff = new Date(grantDate);
+  cliff.setFullYear(cliff.getFullYear() + 1);
+  return getVCDOnOrAfter(cliff);
+}
+
+function buildVestSchedule(startDate, isFrance) {
+  const grantDate = getGrantDate(startDate);
+  const firstVest = getFirstVestDate(grantDate, isFrance);
+  const schedule = [];
+  let cur = firstVest;
+  while (schedule.length < 12) {
+    schedule.push(new Date(cur));
+    cur = getVCDOnOrAfter(new Date(cur.getTime() + 86400000));
+  }
+  return { grantDate, firstVest, schedule };
+}
+
+// ── Compute ───────────────────────────────────────────────────────────────────
+function compute() {
+  const country = document.getElementById('country').value;
+  const isFrance = country === 'FR';
+  const startDate = new Date(document.getElementById('startDate').value);
+  const baseSalary = parseFloat(document.getElementById('baseSalary').value.replace(/,/g, '')) || 0;
+  const grantValueUSD = parseFloat(document.getElementById('grantValue').value.replace(/,/g, '')) || 0;
+  const sharePrice = parseFloat(document.getElementById('sharePrice').value) || 1;
+  const stockGrowthPct = parseFloat(document.getElementById('stockGrowth').value) / 100;
+  const salaryGrowthPct = parseFloat(document.getElementById('salaryGrowth').value) / 100;
+  const fxRate = parseFloat(document.getElementById('fxRate').value) || 1;
+  const cInfo = CURRENCY_INFO[country];
+
+  const { grantDate, firstVest, schedule } = buildVestSchedule(startDate, isFrance);
+  const totalShares = grantValueUSD / sharePrice;
+  const sharesPerQuarter = totalShares / 12;
+
+  let indivPerfMult = 1, bonusTier = 0, salesSplit = 0.6, attainmentPct = 1.0;
+  if (planType === 'corporate') {
+    indivPerfMult = parseFloat(document.getElementById('indivPerf').value);
+    bonusTier = parseFloat(document.getElementById('bonusTier').value);
+  } else {
+    salesSplit = parseFloat(document.getElementById('salesSplit').value);
+    attainmentPct = parseFloat(document.getElementById('attainment').value) / 100;
+  }
+
+  const startYear = startDate.getFullYear();
+  const years = [0,1,2,3,4].map(i => startYear + i);
+  const SCENARIOS = { conservative: 0.75, target: 1.00, optimistic: 1.25 };
+
+  const rows = years.map((year, idx) => {
+    const salMult = Math.pow(1 + salaryGrowthPct, idx);
+    const curSal = baseSalary * salMult;
+    let base, varT, varC, varO, totalCash;
+
+    if (planType === 'corporate') {
+      base = curSal;
+      const YS = new Date(year,0,1), H1E = new Date(year,5,30), H2S = new Date(year,6,1), YE = new Date(year,11,31);
+      const eff = startDate > YS ? startDate : YS;
+      const h1d = Math.max(0, Math.min(H1E,YE) - Math.max(eff,YS));
+      const h1p = Math.min(1, Math.max(0, h1d/86400000) / 181);
+      const h2d = Math.max(0, YE - Math.max(eff,H2S));
+      const h2p = Math.min(1, (startDate>YE ? 0 : Math.max(0,h2d/86400000)) / 184);
+      const annTarget = base * bonusTier;
+      const half = annTarget * 0.5;
+      const calcB = (cm) => (half*h1p + half*h2p) * cm * indivPerfMult;
+      varT = calcB(SCENARIOS.target);
+      varC = calcB(SCENARIOS.conservative);
+      varO = calcB(SCENARIOS.optimistic);
+      totalCash = base + varT;
+    } else {
+      const ote = parseFloat(document.getElementById('oteAmount').value.replace(/,/g, '')) || 0;
+      const oteG = ote * Math.pow(1 + salaryGrowthPct, idx);
+      base = oteG * salesSplit;
+      const varPart = oteG * (1 - salesSplit);
+      let yf = idx === 0 ? (12 - startDate.getMonth()) / 12 : 1;
+      varT = varC = varO = varPart * attainmentPct * yf;
+      totalCash = base + varT;
+    }
+
+    const yearVests = schedule.filter(d => d.getFullYear() === year);
+    const yearEqUSD = yearVests.reduce((s, d) => {
+      const qfn = Math.round((d - new Date()) / (91.25*86400000));
+      const p = sharePrice * Math.pow(1 + stockGrowthPct, Math.max(0,qfn)/4);
+      return s + sharesPerQuarter * p;
+    }, 0);
+
+    const eqLocal = yearEqUSD * fxRate;
+    const toD = (v) => displayCurrency === 'usd' ? v / fxRate : v;
+    const eqD = displayCurrency === 'usd' ? yearEqUSD : eqLocal;
+
+    return {
+      year,
+      base: toD(base),
+      varT: toD(varT), varC: toD(varC), varO: toD(varO),
+      equity: eqD,
+      total_t: toD(base + varT) + eqD,
+      total_c: toD(base + varC) + eqD,
+      total_o: toD(base + varO) + eqD,
+      vestDates: yearVests,
+    };
+  });
+
+  const sym = displayCurrency === 'usd' ? '$' : cInfo.symbol;
+  const fmt = (n) => {
+    if (!n || isNaN(n)) return sym + '0';
+    if (Math.abs(n) >= 1000000) return sym + (n/1000000).toFixed(2) + 'M';
+    return sym + Math.round(n).toLocaleString('en-US');
+  };
+  const fmtShort = (n) => {
+    if (!n || isNaN(n)) return sym + '0';
+    if (Math.abs(n) >= 1000000) return sym + (n/1000000).toFixed(2) + 'M';
+    return sym + Math.round(n).toLocaleString('en-US');
+  };
+
+  const isCorp = planType === 'corporate';
+  const jobFamilyName = document.getElementById('jobFamily').value.split('|')[0];
+  const countryLabel = document.getElementById('country').options[document.getElementById('country').selectedIndex].text;
+  const levelLabel = isCorp ? document.getElementById('bonusTier').options[document.getElementById('bonusTier').selectedIndex].text.split('→')[0].trim() : '';
+  const curCode = displayCurrency === 'usd' ? 'USD' : cInfo.code;
+
+  const grand5_t = rows.reduce((s,r) => s + r.total_t, 0);
+  const grand5_c = rows.reduce((s,r) => s + r.total_c, 0);
+  const grand5_o = rows.reduce((s,r) => s + r.total_o, 0);
+  const totalEquity5 = rows.reduce((s,r) => s + r.equity, 0);
+  const totalBase5 = rows.reduce((s,r) => s + r.base, 0);
+
+  const vestInfo = isFrance
+    ? `<span class="vest-pill cliff-pill">🇫🇷 1-Year Cliff</span><span class="vest-pill">Quarterly thereafter</span>`
+    : `<span class="vest-pill">Quarterly · No cliff</span>`;
+  const grantStr = `Grant Date: <strong>${grantDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong> &nbsp;·&nbsp; First Vest: <strong>${firstVest.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong>`;
+
+  // ── Stacked bar chart data ──
+  const maxTotal = Math.max(...rows.map(r => r.total_t));
+
+  const barRowsHTML = rows.map((r, i) => {
+    const t = r.total_t;
+    const basePct = t > 0 ? (r.base / t * 100).toFixed(1) : 0;
+    const varPct  = t > 0 ? (r.varT / t * 100).toFixed(1) : 0;
+    const eqPct   = t > 0 ? (r.equity / t * 100).toFixed(1) : 0;
+    return `
+    <div class="chart-row">
+      <div class="chart-year-label">Y${i+1} · ${r.year}</div>
+      <div class="chart-bars">
+        <div class="chart-seg" style="width:${basePct}%;background:#0891b2" title="Base: ${fmt(r.base)}"></div>
+        <div class="chart-seg" style="width:${varPct}%;background:#d97706" title="${isCorp?'Bonus':'Variable'}: ${fmt(r.varT)}"></div>
+        <div class="chart-seg" style="width:${eqPct}%;background:#7c3aed" title="Equity: ${fmt(r.equity)}"></div>
+      </div>
+      <div class="chart-total-label">${fmt(r.total_t)}</div>
+    </div>`;
+  }).join('');
+
+  // ── Data table rows ──
+  const tableRows = rows.map((r, i) => {
+    const vestStr = r.vestDates.length > 0
+      ? r.vestDates.map(d => d.toLocaleDateString('en-US',{month:'short',day:'numeric'})).join(', ')
+      : '—';
+    const bonusCell = isCorp
+      ? `<div class="scenario-stack">
+          <div class="scenario-row"><span class="spill spill-c">C</span><span class="amount bonus" style="font-size:12px">${fmt(r.varC)}</span></div>
+          <div class="scenario-row"><span class="spill spill-t">T</span><span class="amount bonus" style="font-size:12px">${fmt(r.varT)}</span></div>
+          <div class="scenario-row"><span class="spill spill-o">O</span><span class="amount bonus" style="font-size:12px;color:var(--optimistic)">${fmt(r.varO)}</span></div>
+        </div>`
+      : `<div class="amount bonus">${fmt(r.varT)}</div>`;
+    const totalCell = isCorp
+      ? `<div class="scenario-stack">
+          <div class="scenario-row"><span class="spill spill-c">C</span><span style="font-size:12px;font-weight:600;color:var(--conservative)">${fmt(r.total_c)}</span></div>
+          <div class="scenario-row"><span class="spill spill-t">T</span><span class="amount total" style="font-size:13px">${fmt(r.total_t)}</span></div>
+          <div class="scenario-row"><span class="spill spill-o">O</span><span style="font-size:12px;font-weight:600;color:var(--optimistic)">${fmt(r.total_o)}</span></div>
+        </div>`
+      : `<div class="amount total">${fmt(r.total_t)}</div>`;
+    return `<tr>
+      <td><span class="year-chip">Y${i+1} · ${r.year}</span></td>
+      <td><div class="amount salary">${fmt(r.base)}</div></td>
+      <td>${bonusCell}</td>
+      <td>
+        <div class="amount equity">${fmt(r.equity)}</div>
+        <div class="amount-sub">${r.vestDates.length} vests · ${vestStr}</div>
+      </td>
+      <td>${totalCell}</td>
+    </tr>`;
+  }).join('');
+
+  // ── Shareable candidate card ──
+  const miniBarRows = rows.map((r, i) => {
+    const t = r.total_t;
+    const bp = t > 0 ? (r.base/t*100).toFixed(1) : 0;
+    const vp = t > 0 ? (r.varT/t*100).toFixed(1) : 0;
+    const ep = t > 0 ? (r.equity/t*100).toFixed(1) : 0;
+    return `<div class="mini-bar-row">
+      <div class="mini-bar-year">Y${i+1} · ${r.year}</div>
+      <div class="mini-bars">
+        <div class="mini-seg" style="width:${bp}%;background:#0891b2"></div>
+        <div class="mini-seg" style="width:${vp}%;background:#d97706"></div>
+        <div class="mini-seg" style="width:${ep}%;background:#7c3aed"></div>
+      </div>
+      <div class="mini-total">${fmtShort(t)}</div>
+    </div>`;
+  }).join('');
+
+  const cardTableRows = rows.map((r, i) => {
+    const bonusTxt = isCorp
+      ? `${fmtShort(r.varC)} – ${fmtShort(r.varO)}`
+      : fmtShort(r.varT);
+    return `<tr>
+      <td style="font-weight:700;color:#3b6ef5">Y${i+1} (${r.year})</td>
+      <td style="font-weight:600">${fmtShort(r.base)}</td>
+      <td style="color:#059669;font-weight:600">${bonusTxt}</td>
+      <td style="color:#7c3aed;font-weight:600">${fmtShort(r.equity)}</td>
+      <td style="font-weight:800;color:#d97706">${isCorp ? fmtShort(r.varT)===fmtShort(r.varO) ? fmtShort(r.total_t) : fmtShort(r.total_c)+' – '+fmtShort(r.total_o) : fmtShort(r.total_t)}</td>
+    </tr>`;
+  }).join('');
+
+  const fxLine = displayCurrency === 'usd' ? 'All values in USD.' : country === 'US' ? 'All values in USD.' : `Cash in ${cInfo.code} · Equity in USD converted at ${fxRate} ${cInfo.code}/USD.`;
+  const scenarioNote = isCorp ? ` Bonus scenarios: C=75%, T=100%, O=125% company funding × individual performance multiplier.` : ` Variable pay at ${Math.round(attainmentPct*100)}% attainment.`;
+
+  document.getElementById('resultsPanel').innerHTML = `
+    <div class="card-header">
+      <span class="icon">📈</span>
+      <h2>5-Year Projection</h2>
+      <span class="badge badge-gray" style="margin-left:4px">${jobFamilyName}</span>
+      ${isFrance ? '<span class="badge" style="background:#fffbeb;color:#d97706;border:1px solid rgba(217,119,6,0.2);margin-left:4px">🇫🇷 1-Year Cliff</span>' : ''}
+      <div style="margin-left:auto;font-size:11px;color:var(--text3)">${fxLine}</div>
+    </div>
+
+    <!-- Summary strip -->
+    <div class="summary-strip">
+      ${isCorp ? `
+      <div class="summary-card">
+        <div class="summary-label">Conservative 5-yr</div>
+        <div class="summary-value" style="color:var(--conservative)">${fmt(grand5_c)}</div>
+        <div class="summary-sub">75% funding</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Target 5-yr Total</div>
+        <div class="summary-value" style="color:var(--total-color)">${fmt(grand5_t)}</div>
+        <div class="summary-sub">100% funding</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Optimistic 5-yr</div>
+        <div class="summary-value" style="color:var(--optimistic)">${fmt(grand5_o)}</div>
+        <div class="summary-sub">125% funding</div>
+      </div>` : `
+      <div class="summary-card">
+        <div class="summary-label">5-Year Total</div>
+        <div class="summary-value" style="color:var(--total-color)">${fmt(grand5_t)}</div>
+        <div class="summary-sub">all comp</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">5-Year Cash</div>
+        <div class="summary-value" style="color:var(--salary-color)">${fmt(totalBase5)}</div>
+        <div class="summary-sub">base + variable</div>
+      </div>`}
+      <div class="summary-card">
+        <div class="summary-label">5-yr Equity</div>
+        <div class="summary-value" style="color:var(--equity-color)">${fmt(totalEquity5)}</div>
+        <div class="summary-sub">${curCode} · new hire grant</div>
+      </div>
+    </div>
+
+    <!-- Vesting info -->
+    <div class="results-section">
+      <div class="results-section-title">Vesting Schedule</div>
+      <div style="margin-bottom:6px">${vestInfo}</div>
+      <div style="font-size:12px;color:var(--text2)">${grantStr}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">${Math.round(totalShares).toLocaleString()} shares @ $${sharePrice}/share · $${Math.round(grantValueUSD).toLocaleString()} grant value</div>
+    </div>
+
+    <!-- Stacked bar chart -->
+    <div class="results-section">
+      <div class="results-section-title">Comp Mix by Year (Target Scenario)</div>
+      <div class="chart-wrap">${barRowsHTML}</div>
+      <div class="chart-legend">
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#0891b2"></div>Base Salary</div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#d97706"></div>${isCorp ? 'Bonus (Target)' : 'Variable'}</div>
+        <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#7c3aed"></div>Equity Vesting</div>
+      </div>
+    </div>
+
+    <!-- Scenario legend -->
+    ${isCorp ? `<div class="scenario-legend-bar">
+      <div class="scenario-legend-item"><span class="spill spill-c">C</span>Conservative — 75% company funding</div>
+      <div class="scenario-legend-item"><span class="spill spill-t">T</span>Target — 100% company funding</div>
+      <div class="scenario-legend-item"><span class="spill spill-o">O</span>Optimistic — 125% company funding</div>
+      <div style="margin-left:auto;font-size:10px;color:var(--text3)">Past results do not predict future performance</div>
+    </div>` : ''}
+
+    <!-- Detail table -->
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th style="color:var(--salary-color)">Base Salary</th>
+            <th style="color:var(--bonus-color)">${isCorp ? 'Bonus (C/T/O)' : 'Variable'}</th>
+            <th style="color:var(--equity-color)">Equity Vesting</th>
+            <th style="color:var(--total-color)">${isCorp ? 'Total (C/T/O)' : 'Total Comp'}</th>
+          </tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>
+
+    <!-- Shareable candidate card -->
+    <div class="share-section">
+      <div class="share-section-header">
+        <div>
+          <div class="share-section-title">📤 Shareable Candidate Card</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px">Screenshot the card below to share with candidates. Compact, professional, print-ready.</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="share-btn secondary" onclick="window.print()">🖨 Print</button>
+        </div>
+      </div>
+
+      <div class="candidate-card" id="candidateCard">
+        <!-- Card header gradient bar -->
+        <div class="card-top-bar">
+          <div class="card-company" style="display:flex;align-items:center;gap:10px">
+            <img src="https://logo.svgcdn.com/logos/amplitude.svg" alt="Amplitude" style="height:18px;width:auto;filter:brightness(0) invert(1);opacity:0.85" onerror="this.style.display='none'">
+            <span>Total Compensation Overview · Confidential</span>
+          </div>
+          <div class="card-title">${jobFamilyName}</div>
+          <div class="card-subtitle">${levelLabel ? levelLabel + ' · ' : ''}${countryLabel.replace(/[🇺🇸🇬🇧🇨🇦🇫🇷🇩🇪🇦🇺🇸🇬🇯🇵🇮🇳🇧🇷]\s*/u,'').trim()}</div>
+          <div class="card-meta">
+            <div class="card-meta-item">
+              <div class="card-meta-label">Start Date</div>
+              <div class="card-meta-value">${startDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+            </div>
+            <div class="card-meta-item">
+              <div class="card-meta-label">Year 1 Base</div>
+              <div class="card-meta-value">${fmt(rows[0].base)}</div>
+            </div>
+            <div class="card-meta-item">
+              <div class="card-meta-label">New Hire Grant</div>
+              <div class="card-meta-value">$${Math.round(grantValueUSD).toLocaleString('en-US')}</div>
+            </div>
+            <div class="card-meta-item">
+              <div class="card-meta-label">Vesting</div>
+              <div class="card-meta-value">${isFrance ? '1-yr cliff, then quarterly' : 'Quarterly · No cliff'}</div>
+            </div>
+            <div class="card-meta-item">
+              <div class="card-meta-label">Plan Type</div>
+              <div class="card-meta-value">${isCorp ? 'Corporate Bonus' : 'OTE / Sales'}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body-inner">
+          <!-- Mini summary grid -->
+          <div class="card-summary-grid">
+            <div class="card-summary-item">
+              <div class="card-summary-item-label">${isCorp ? 'Target 5-Year Total' : '5-Year Total'}</div>
+              <div class="card-summary-item-value" style="color:var(--total-color)">${fmt(grand5_t)}</div>
+              <div class="card-summary-item-sub">all comp · ${curCode}</div>
+            </div>
+            ${isCorp ? `
+            <div class="card-summary-item">
+              <div class="card-summary-item-label">Range (Conservative–Optimistic)</div>
+              <div class="card-summary-item-value" style="color:var(--text2);font-size:14px">${fmtShort(grand5_c)} – ${fmtShort(grand5_o)}</div>
+              <div class="card-summary-item-sub">based on company funding scenarios</div>
+            </div>` : `
+            <div class="card-summary-item">
+              <div class="card-summary-item-label">5-Year Variable</div>
+              <div class="card-summary-item-value" style="color:var(--bonus-color)">${fmt(rows.reduce((s,r)=>s+r.varT,0))}</div>
+              <div class="card-summary-item-sub">at ${Math.round(attainmentPct*100)}% attainment</div>
+            </div>`}
+            <div class="card-summary-item">
+              <div class="card-summary-item-label">Total Equity (3-yr vest)</div>
+              <div class="card-summary-item-value" style="color:var(--equity-color)">${fmt(totalEquity5)}</div>
+              <div class="card-summary-item-sub">grant: $${Math.round(grantValueUSD).toLocaleString('en-US')} USD · ${Math.round(totalShares).toLocaleString()} shares</div>
+            </div>
+          </div>
+
+          <!-- Mini bar chart -->
+          <div class="mini-chart">
+            <div class="mini-chart-title">Year-over-Year Comp Breakdown</div>
+            ${miniBarRows}
+            <div class="chart-legend" style="margin-top:10px;padding-top:10px">
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#0891b2"></div>Base Salary</div>
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#d97706"></div>${isCorp ? 'Bonus (Target)' : 'Variable'}</div>
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#7c3aed"></div>Equity Vesting</div>
+            </div>
+          </div>
+
+          <!-- Compact table -->
+          <table class="card-table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th style="color:#0891b2">Base Salary</th>
+                <th style="color:#d97706">${isCorp ? 'Bonus (range)' : 'Variable'}</th>
+                <th style="color:#7c3aed">Equity</th>
+                <th style="color:#0f766e">Total Comp</th>
+              </tr>
+            </thead>
+            <tbody>${cardTableRows}</tbody>
+          </table>
+        </div>
+
+        <div class="card-footer">
+          <img src="https://logo.svgcdn.com/logos/amplitude.svg" alt="Amplitude" style="height:14px;width:auto;opacity:0.35;flex-shrink:0;margin-top:2px" onerror="this.style.display='none'">
+          <span>⚠️</span>
+          <span>
+            Projections are illustrative only. Equity values assume ${document.getElementById('stockGrowth').value}% annual stock price growth; actual values may vary.
+            ${isCorp ? ' Corporate bonus is semi-annual (H1 paid Sep, H2 paid Mar) and depends on company and individual performance. Bonus scenarios shown at 75%, 100%, and 125% company funding.' : ' Variable pay shown at stated attainment; actual payout depends on quota achievement.'}
+            Salary growth assumes ${document.getElementById('salaryGrowth').value}% annually. All figures in ${curCode}${country !== 'US' && displayCurrency !== 'usd' ? '; equity converted from USD at ' + fxRate + ' ' + cInfo.code + '/USD' : ''}.
+            ${isFrance ? ' France: 1-year vesting cliff per local regulations.' : ''}
+            This is not a compensation guarantee or offer.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ <strong>Recruiter tool only.</strong> Actual compensation depends on individual &amp; company performance, stock price, and other factors. ${fxLine}${scenarioNote}
+      ${isFrance ? ' 🇫🇷 France: 1-year vesting cliff applied per local policy.' : ''}
+    </div>
+  `;
+}
+
+
+// ── Currency input formatting ───────────────────────────────────────────────
+const CURRENCY_INPUT_IDS = ['baseSalary', 'oteAmount', 'grantValue'];
+
+function formatCurrencyInput(el) {
+  // Strip everything except digits
+  const raw = el.value.replace(/[^0-9]/g, '');
+  if (raw === '') { el.value = ''; return; }
+  el.value = parseInt(raw, 10).toLocaleString('en-US');
+}
+
+CURRENCY_INPUT_IDS.forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  // Format on every keystroke
+  el.addEventListener('input', () => formatCurrencyInput(el));
+  // Select all on focus for easy re-entry
+  el.addEventListener('focus', () => setTimeout(() => el.select(), 0));
+  // Clean format on blur
+  el.addEventListener('blur', () => formatCurrencyInput(el));
+  // Format initial value
+  formatCurrencyInput(el);
+});
+
+
+// ── Live Data Fetch ──────────────────────────────────────────────────────────
+// AMPL share price: no free stock API supports CORS from standalone HTML files.
+// Field is editable — recruiter checks Nasdaq link and updates if needed.
+const AMPL_LAST_PRICE = 7.98;
+const AMPL_LAST_DATE  = 'Mar 9, 2026';
+
+async function fetchLiveData() {
+  // 1. Set AMPL price field — editable, with link to Nasdaq for manual refresh
+  const priceEl = document.getElementById('sharePrice');
+  priceEl.value = AMPL_LAST_PRICE.toFixed(2);
+  priceEl.readOnly = false;
+  priceEl.style.background = '';
+  priceEl.style.cursor = '';
+  priceEl.style.borderStyle = '';
+
+  // 2. FX rates via Frankfurter (open-source, CORS-enabled, no key needed)
+  try {
+    const r = await fetch('https://api.frankfurter.app/latest?from=USD&to=GBP,CAD,EUR,AUD,SGD,JPY,INR,BRL');
+    if (r.ok) {
+      const d = await r.json();
+      const rates = d.rates;
+      const liveMap = {
+        UK: rates.GBP, CA: rates.CAD, FR: rates.EUR, DE: rates.EUR,
+        AU: rates.AUD, SG: rates.SGD, JP: rates.JPY, IN: rates.INR, BR: rates.BRL
+      };
+      for (const [country, rate] of Object.entries(liveMap)) {
+        if (rate && CURRENCY_INFO[country]) {
+          CURRENCY_INFO[country].defaultFX = parseFloat(rate.toFixed(4));
+        }
+      }
+      onCountryChange();
+      const fxBadge = document.getElementById('fxBadge');
+      fxBadge.textContent = '● Live · ' + (d.date || 'today');
+      fxBadge.style.background = '#dcfce7';
+      fxBadge.style.color = '#14532d';
+      fxBadge.style.borderColor = '#bbf7d0';
+    } else { throw new Error('HTTP ' + r.status); }
+  } catch(e) {
+    const fxBadge = document.getElementById('fxBadge');
+    fxBadge.textContent = 'Estimated';
+    fxBadge.style.background = '#fef3c7';
+    fxBadge.style.color = '#92400e';
+    fxBadge.style.borderColor = '#fcd34d';
+  }
+}
+
+// Init
+onCountryChange();
+fetchLiveData();
+onJobFamilyChange();
+</script>
+</body>
+</html>
