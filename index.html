@@ -899,6 +899,17 @@ function getVCDForQuarter(date) {
   return new Date(y, 10, 15);              // Nov 15
 }
 
+// Get first VCD strictly AFTER a given date
+function getNextVCDAfter(date) {
+  const y = date.getFullYear();
+  const candidates = [
+    new Date(y, 1, 15), new Date(y, 4, 15),
+    new Date(y, 7, 15), new Date(y, 10, 15),
+    new Date(y+1, 1, 15), new Date(y+1, 4, 15)
+  ];
+  return candidates.find(c => c > date);
+}
+
 // Get first VCD on or after a given date (used for sequencing quarterly vests)
 function getVCDOnOrAfter(date) {
   const y = date.getFullYear();
@@ -912,27 +923,35 @@ function getVCDOnOrAfter(date) {
 
 function buildVestSchedule(startDate, isFrance) {
   const grantDate = getGrantDate(startDate);
-  let vestingStartDate;
 
-  if (isFrance) {
-    // France: 1-year cliff from grant date, then align to next VCD on or after cliff date
-    const cliffDate = new Date(grantDate);
-    cliffDate.setFullYear(cliffDate.getFullYear() + 1);
-    vestingStartDate = getVCDOnOrAfter(cliffDate);
-  } else {
-    // Non-France: use the VCD corresponding to the start month quarter
-    vestingStartDate = getVCDForQuarter(startDate);
+  // Vesting Start Date = always the VCD for the start month quarter (all employees)
+  // BUT for France, if that VCD is on or before grant date, bump to next VCD after grant
+  let vestingStartDate = getVCDForQuarter(startDate);
+  if (isFrance && vestingStartDate <= grantDate) {
+    vestingStartDate = getNextVCDAfter(grantDate);
   }
 
-  // Build 12 quarterly vest dates from vestingStartDate
+  // First Vest Date:
+  // - Non-France: same as vestingStartDate (no cliff)
+  // - France: vestingStartDate + 1 year, aligned to VCD on or after that date
+  let firstVestDate;
+  if (isFrance) {
+    const cliffDate = new Date(vestingStartDate);
+    cliffDate.setFullYear(cliffDate.getFullYear() + 1);
+    firstVestDate = getVCDOnOrAfter(cliffDate);
+  } else {
+    firstVestDate = vestingStartDate;
+  }
+
+  // Build 12 quarterly vest dates starting from firstVestDate
   const schedule = [];
-  let cur = vestingStartDate;
+  let cur = firstVestDate;
   while (schedule.length < 12) {
     schedule.push(new Date(cur));
     cur = getVCDOnOrAfter(new Date(cur.getTime() + 86400001));
   }
 
-  return { grantDate, vestingStartDate, firstVest: vestingStartDate, schedule };
+  return { grantDate, vestingStartDate, firstVest: firstVestDate, schedule };
 }
 
 // ── Compute ───────────────────────────────────────────────────────────────────
@@ -1046,11 +1065,12 @@ function compute() {
     ? `<span class="vest-pill cliff-pill">🇫🇷 1-Year Cliff</span><span class="vest-pill">Quarterly thereafter</span>`
     : `<span class="vest-pill">Quarterly · No cliff</span>`;
   const fmtDate = (d) => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const fv = schedule[0]; // first vest = first item in schedule (post-cliff for France)
   const grantStr = `
     <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text2)">
       <div><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:2px">Grant Date</span><strong>${fmtDate(grantDate)}</strong></div>
       <div><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:2px">Vesting Start Date</span><strong style="color:var(--accent)">${fmtDate(vestingStartDate)}</strong></div>
-      <div><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:2px">First Vest Date</span><strong style="color:var(--accent)">${fmtDate(vestingStartDate)}</strong></div>
+      <div><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:2px">First Vest Date</span><strong style="color:var(--equity-color)">${fmtDate(fv)}</strong></div>
       <div><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:2px">Last Vest Date</span><strong>${fmtDate(schedule[schedule.length-1])}</strong></div>
     </div>`;
 
