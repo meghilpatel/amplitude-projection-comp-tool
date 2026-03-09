@@ -881,34 +881,67 @@ function setCurrency(c) {
 // ── Vesting ──────────────────────────────────────────────────────────────────
 function getGrantDate(startDate) {
   const d = new Date(startDate);
-  let m = d.getMonth() + 1, y = d.getFullYear();
+  // Grant date = 15th of month AFTER start month
+  // getMonth() is 0-indexed, so +2 moves to the following month (1-indexed)
+  let m = d.getMonth() + 2, y = d.getFullYear();
   if (m > 12) { m = 1; y++; }
   return new Date(y, m - 1, 15);
 }
 
-function getVCDOnOrAfter(date) {
+// VCD lookup: which quarter does a start month fall into?
+// Jan-Mar → Feb 15 | Apr-Jun → May 15 | Jul-Sep → Aug 15 | Oct-Dec → Nov 15
+function getVCDForQuarter(date) {
+  const m = date.getMonth(); // 0-indexed
   const y = date.getFullYear();
-  const c = [new Date(y,1,15),new Date(y,4,15),new Date(y,7,15),new Date(y,10,15),new Date(y+1,1,15)];
-  return c.find(x => x >= date);
+  if (m <= 2)  return new Date(y, 1, 15);  // Feb 15
+  if (m <= 5)  return new Date(y, 4, 15);  // May 15
+  if (m <= 8)  return new Date(y, 7, 15);  // Aug 15
+  return new Date(y, 10, 15);              // Nov 15
 }
 
-function getFirstVestDate(grantDate, isFrance) {
-  if (!isFrance) return getVCDOnOrAfter(grantDate);
-  const cliff = new Date(grantDate);
-  cliff.setFullYear(cliff.getFullYear() + 1);
-  return getVCDOnOrAfter(cliff);
+// Get the next VCD strictly after a given date (used to bump France)
+function getNextVCD(date) {
+  const y = date.getFullYear();
+  const candidates = [
+    new Date(y, 1, 15), new Date(y, 4, 15),
+    new Date(y, 7, 15), new Date(y, 10, 15),
+    new Date(y+1, 1, 15)
+  ];
+  // Find first candidate strictly after date
+  return candidates.find(c => c > date);
+}
+
+// Get first VCD on or after a given date (used for non-France quarterly sequence)
+function getVCDOnOrAfter(date) {
+  const y = date.getFullYear();
+  const candidates = [
+    new Date(y, 1, 15), new Date(y, 4, 15),
+    new Date(y, 7, 15), new Date(y, 10, 15),
+    new Date(y+1, 1, 15)
+  ];
+  return candidates.find(c => c >= date);
 }
 
 function buildVestSchedule(startDate, isFrance) {
   const grantDate = getGrantDate(startDate);
-  const firstVest = getFirstVestDate(grantDate, isFrance);
+
+  // Step 1: Find VCD based on start month quarter
+  let vestingStartDate = getVCDForQuarter(startDate);
+
+  // Step 2: France only — if VCD is before grant date, bump to next VCD
+  if (isFrance && vestingStartDate <= grantDate) {
+    vestingStartDate = getNextVCD(grantDate);
+  }
+
+  // Step 3: Build 12 quarterly vest dates from vestingStartDate
   const schedule = [];
-  let cur = firstVest;
+  let cur = vestingStartDate;
   while (schedule.length < 12) {
     schedule.push(new Date(cur));
-    cur = getVCDOnOrAfter(new Date(cur.getTime() + 86400000));
+    cur = getVCDOnOrAfter(new Date(cur.getTime() + 86400001)); // next day → find next VCD
   }
-  return { grantDate, firstVest, schedule };
+
+  return { grantDate, vestingStartDate, firstVest: vestingStartDate, schedule };
 }
 
 // ── Compute ───────────────────────────────────────────────────────────────────
@@ -924,7 +957,7 @@ function compute() {
   const fxRate = parseFloat(document.getElementById('fxRate').value) || 1;
   const cInfo = CURRENCY_INFO[country];
 
-  const { grantDate, firstVest, schedule } = buildVestSchedule(startDate, isFrance);
+  const { grantDate, vestingStartDate, firstVest, schedule } = buildVestSchedule(startDate, isFrance);
   const totalShares = grantValueUSD / sharePrice;
   const sharesPerQuarter = totalShares / 12;
 
@@ -1021,7 +1054,13 @@ function compute() {
   const vestInfo = isFrance
     ? `<span class="vest-pill cliff-pill">🇫🇷 1-Year Cliff</span><span class="vest-pill">Quarterly thereafter</span>`
     : `<span class="vest-pill">Quarterly · No cliff</span>`;
-  const grantStr = `Grant Date: <strong>${grantDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong> &nbsp;·&nbsp; First Vest: <strong>${firstVest.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong>`;
+  const fmtDate = (d) => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const grantStr = `
+    <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text2)">
+      <div><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:2px">Grant Date</span><strong>${fmtDate(grantDate)}</strong></div>
+      <div><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:2px">Vesting Start Date</span><strong style="color:var(--accent)">${fmtDate(vestingStartDate)}</strong></div>
+      <div><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);display:block;margin-bottom:2px">Last Vest Date</span><strong>${fmtDate(schedule[schedule.length-1])}</strong></div>
+    </div>`;
 
   // ── Stacked bar chart data ──
   const maxTotal = Math.max(...rows.map(r => r.total_t));
@@ -1155,7 +1194,7 @@ function compute() {
     <div class="results-section">
       <div class="results-section-title">Vesting Schedule</div>
       <div style="margin-bottom:6px">${vestInfo}</div>
-      <div style="font-size:12px;color:var(--text2)">${grantStr}</div>
+      <div>${grantStr}</div>
       <div style="font-size:11px;color:var(--text3);margin-top:4px">${Math.round(totalShares).toLocaleString()} shares @ $${sharePrice}/share · $${Math.round(grantValueUSD).toLocaleString()} grant value</div>
     </div>
 
@@ -1229,8 +1268,12 @@ function compute() {
               <div class="card-meta-value">$${Math.round(grantValueUSD).toLocaleString('en-US')}</div>
             </div>
             <div class="card-meta-item">
-              <div class="card-meta-label">Vesting</div>
-              <div class="card-meta-value">${isFrance ? '1-yr cliff, then quarterly' : 'Quarterly · No cliff'}</div>
+              <div class="card-meta-label">Grant Date</div>
+              <div class="card-meta-value">${fmtDate(grantDate)}</div>
+            </div>
+            <div class="card-meta-item">
+              <div class="card-meta-label">Vesting Start</div>
+              <div class="card-meta-value">${fmtDate(vestingStartDate)}</div>
             </div>
             <div class="card-meta-item">
               <div class="card-meta-label">Plan Type</div>
