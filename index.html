@@ -996,7 +996,7 @@ function buildVestSchedule(startDate, isFrance) {
     cliff.setFullYear(cliff.getFullYear() + 1);
     firstVestDate = getVCDOnOrAfter(cliff);
   } else {
-    firstVestDate = getNextVCDAfter(vestingStartDate);
+    firstVestDate = vestingStartDate;
   }
 
   // Build 12 quarterly vest events starting from firstVestDate
@@ -1049,20 +1049,31 @@ function compute() {
   const years = [0,1,2,3,4].map(i => startYear + i);
   const SCENARIOS = { conservative: 0.75, target: 1.00, optimistic: 1.25 };
 
+  // Year 1 proration factor: days from start date to Dec 31 / 365
+  const yearStartMs   = new Date(startYear, 0, 1).getTime();
+  const yearEndMs     = new Date(startYear, 11, 31).getTime();
+  const startMs       = startDate.getTime();
+  const daysInYear    = 365;
+  const daysWorkedY1  = Math.max(0, (yearEndMs - startMs) / 86400000);
+  const y1Prorate     = Math.min(1, daysWorkedY1 / daysInYear);
+
   const rows = years.map((year, idx) => {
     const salMult = Math.pow(1 + salaryGrowthPct, idx);
     const curSal = baseSalary * salMult;
     let base, varT, varC, varO, totalCash;
 
     if (planType === 'corporate') {
-      base = curSal;
+      // Base salary prorated in Y1 by actual days worked
+      base = idx === 0 ? curSal * y1Prorate : curSal;
+
+      // Bonus: prorated by H1/H2 days worked (existing logic is correct)
       const YS = new Date(year,0,1), H1E = new Date(year,5,30), H2S = new Date(year,6,1), YE = new Date(year,11,31);
       const eff = startDate > YS ? startDate : YS;
       const h1d = Math.max(0, Math.min(H1E,YE) - Math.max(eff,YS));
       const h1p = Math.min(1, Math.max(0, h1d/86400000) / 181);
       const h2d = Math.max(0, YE - Math.max(eff,H2S));
       const h2p = Math.min(1, (startDate>YE ? 0 : Math.max(0,h2d/86400000)) / 184);
-      const annTarget = base * bonusTier;
+      const annTarget = curSal * bonusTier; // use full salary for bonus target calc
       const half = annTarget * 0.5;
       const calcB = (cm) => (half*h1p + half*h2p) * cm * indivPerfMult;
       varT = calcB(SCENARIOS.target);
@@ -1072,10 +1083,11 @@ function compute() {
     } else {
       const ote = parseFloat(document.getElementById('oteAmount').value.replace(/,/g, '')) || 0;
       const oteG = ote * Math.pow(1 + salaryGrowthPct, idx);
-      base = oteG * salesSplit;
+      // Base and variable both prorated in Y1 by actual days worked
+      const prorateMultiplier = idx === 0 ? y1Prorate : 1;
+      base = oteG * salesSplit * prorateMultiplier;
       const varPart = oteG * (1 - salesSplit);
-      let yf = idx === 0 ? (12 - startDate.getMonth()) / 12 : 1;
-      varT = varC = varO = varPart * attainmentPct * yf;
+      varT = varC = varO = varPart * attainmentPct * prorateMultiplier;
       totalCash = base + varT;
     }
 
