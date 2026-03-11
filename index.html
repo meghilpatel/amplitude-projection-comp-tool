@@ -996,7 +996,7 @@ function buildVestSchedule(startDate, isFrance) {
     cliff.setFullYear(cliff.getFullYear() + 1);
     firstVestDate = getVCDOnOrAfter(cliff);
   } else {
-    firstVestDate = vestingStartDate;
+    firstVestDate = getNextVCDAfter(vestingStartDate);
   }
 
   // Build 12 quarterly vest events starting from firstVestDate
