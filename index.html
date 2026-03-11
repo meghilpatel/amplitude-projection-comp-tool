@@ -916,76 +916,95 @@ function onOTEInput() {
 }
 
 // ── Vesting ──────────────────────────────────────────────────────────────────
-function getGrantDate(startDate) {
-  const d = new Date(startDate);
-  // Grant date = 15th of month AFTER start month
-  // getMonth() is 0-indexed, so +2 moves to the following month (1-indexed)
-  let m = d.getMonth() + 2, y = d.getFullYear();
+// ── Vesting Logic ────────────────────────────────────────────────────────────
+// Always parse date inputs as LOCAL time to avoid UTC timezone shift
+// e.g. new Date('2026-04-01') = UTC midnight = March 31 in US timezones (WRONG)
+// new Date(2026, 3, 1) = local April 1 (CORRECT)
+function parseLocalDate(str) {
+  if (typeof str !== 'string') return str;
+  const [y, m, d] = str.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+// Grant date = 15th of the month AFTER the start month
+// e.g. Start Apr 1  → Grant May 15
+// e.g. Start Dec 1  → Grant Jan 15 (next year)
+function getGrantDate(start) {
+  const d = parseLocalDate(start);
+  let m = d.getMonth() + 2; // +1 for next month, already 0→1 indexed = +2
+  let y = d.getFullYear();
   if (m > 12) { m = 1; y++; }
   return new Date(y, m - 1, 15);
 }
 
-// VCD lookup: which quarter does a start month fall into?
-// Jan-Mar → Feb 15 | Apr-Jun → May 15 | Jul-Sep → Aug 15 | Oct-Dec → Nov 15
-function getVCDForQuarter(date) {
-  const m = date.getMonth(); // 0-indexed
-  const y = date.getFullYear();
-  if (m <= 2)  return new Date(y, 1, 15);  // Feb 15
-  if (m <= 5)  return new Date(y, 4, 15);  // May 15
-  if (m <= 8)  return new Date(y, 7, 15);  // Aug 15
-  return new Date(y, 10, 15);              // Nov 15
+// Vesting Start Date = the quarterly VCD that corresponds to the start month
+// Jan 1–Mar 31  → Feb 15
+// Apr 1–Jun 30  → May 15
+// Jul 1–Sep 30  → Aug 15
+// Oct 1–Dec 31  → Nov 15
+function getVestingStartDate(start) {
+  const d = parseLocalDate(start);
+  const m = d.getMonth(); // 0-indexed: Jan=0, Apr=3, Jul=6, Oct=9
+  const y = d.getFullYear();
+  if (m <= 2)  return new Date(y, 1,  15); // Feb 15
+  if (m <= 5)  return new Date(y, 4,  15); // May 15
+  if (m <= 8)  return new Date(y, 7,  15); // Aug 15
+  return       new Date(y, 10, 15);        // Nov 15
 }
 
-// Get first VCD strictly AFTER a given date
+// Get the next VCD strictly AFTER a given date
+// Used for France: bump VestingStartDate past the grant date if needed
 function getNextVCDAfter(date) {
   const y = date.getFullYear();
-  const candidates = [
-    new Date(y, 1, 15), new Date(y, 4, 15),
-    new Date(y, 7, 15), new Date(y, 10, 15),
-    new Date(y+1, 1, 15), new Date(y+1, 4, 15)
+  const vcds = [
+    new Date(y,   1, 15), new Date(y,  4, 15),
+    new Date(y,   7, 15), new Date(y, 10, 15),
+    new Date(y+1, 1, 15), new Date(y+1, 4, 15),
+    new Date(y+1, 7, 15), new Date(y+1,10, 15),
   ];
-  return candidates.find(c => c > date);
+  return vcds.find(v => v > date);
 }
 
-// Get first VCD on or after a given date (used for sequencing quarterly vests)
+// Get first VCD on or after a given date
+// Used to sequence the 12 quarterly vest events
 function getVCDOnOrAfter(date) {
   const y = date.getFullYear();
-  const candidates = [
-    new Date(y, 1, 15), new Date(y, 4, 15),
-    new Date(y, 7, 15), new Date(y, 10, 15),
-    new Date(y+1, 1, 15), new Date(y+1, 4, 15)
+  const vcds = [
+    new Date(y,   1, 15), new Date(y,  4, 15),
+    new Date(y,   7, 15), new Date(y, 10, 15),
+    new Date(y+1, 1, 15), new Date(y+1, 4, 15),
+    new Date(y+1, 7, 15), new Date(y+1,10, 15),
   ];
-  return candidates.find(c => c >= date);
+  return vcds.find(v => v >= date);
 }
 
 function buildVestSchedule(startDate, isFrance) {
-  const grantDate = getGrantDate(startDate);
+  const grantDate       = getGrantDate(startDate);
+  let   vestingStartDate = getVestingStartDate(startDate);
 
-  // Vesting Start Date = always the VCD for the start month quarter (all employees)
-  // BUT for France, if that VCD is on or before grant date, bump to next VCD after grant
-  let vestingStartDate = getVCDForQuarter(startDate);
+  // France only: if VestingStartDate is on or before grant date, bump to next VCD
   if (isFrance && vestingStartDate <= grantDate) {
     vestingStartDate = getNextVCDAfter(grantDate);
   }
 
   // First Vest Date:
-  // - Non-France: same as vestingStartDate (no cliff)
-  // - France: vestingStartDate + 1 year, aligned to VCD on or after that date
+  //   Non-France: same as VestingStartDate (quarterly, no cliff)
+  //   France:     VestingStartDate + 1 year, aligned to VCD on or after that cliff
   let firstVestDate;
   if (isFrance) {
-    const cliffDate = new Date(vestingStartDate);
-    cliffDate.setFullYear(cliffDate.getFullYear() + 1);
-    firstVestDate = getVCDOnOrAfter(cliffDate);
+    const cliff = new Date(vestingStartDate);
+    cliff.setFullYear(cliff.getFullYear() + 1);
+    firstVestDate = getVCDOnOrAfter(cliff);
   } else {
     firstVestDate = vestingStartDate;
   }
 
-  // Build 12 quarterly vest dates starting from firstVestDate
+  // Build 12 quarterly vest events starting from firstVestDate
   const schedule = [];
   let cur = firstVestDate;
   while (schedule.length < 12) {
     schedule.push(new Date(cur));
-    cur = getVCDOnOrAfter(new Date(cur.getTime() + 86400001));
+    cur = getVCDOnOrAfter(new Date(cur.getTime() + 86400001)); // 1ms past current VCD
   }
 
   return { grantDate, vestingStartDate, firstVest: firstVestDate, schedule };
