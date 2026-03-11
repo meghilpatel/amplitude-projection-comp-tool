@@ -704,21 +704,40 @@ input[type="date"] { color-scheme: light; }
               </select>
             </div>
           </div>
-          <div class="form-row" id="salesSplitRow" style="display:none">
-            <div>
-              <label>Pay Mix (Base/Variable)</label>
-              <select id="salesSplit">
-                <option value="0.5">50/50</option>
-                <option value="0.6">60/40</option>
-                <option value="0.7">70/30</option>
-                <option value="0.75">75/25</option>
-                <option value="0.8">80/20</option>
-              </select>
+          <!-- OTE section — only shown for Sales roles -->
+          <div id="oteSection" style="display:none">
+            <div class="form-row single" style="margin-bottom:10px">
+              <div>
+                <label>Total OTE (Local Currency)</label>
+                <input type="text" inputmode="numeric" id="oteAmount" placeholder="e.g. 200,000" value="200,000" oninput="onOTEInput()">
+              </div>
             </div>
-            <div>
-              <label>Attainment % (Year 1)</label>
-              <input type="number" id="attainment" value="100" min="0" max="200">
+            <div class="form-row">
+              <div>
+                <label>Pay Mix (Base / Variable)</label>
+                <select id="salesSplit" onchange="onOTEInput()">
+                  <option value="0.5">50/50</option>
+                  <option value="0.6">60/40</option>
+                  <option value="0.7">70/30</option>
+                  <option value="0.75">75/25</option>
+                  <option value="0.8">80/20</option>
+                </select>
+              </div>
+              <div>
+                <label>Year 1 Attainment %</label>
+                <input type="number" id="attainment" value="100" min="0" max="200">
+              </div>
             </div>
+            <!-- Auto-calculated base salary display -->
+            <div id="oteBreakdownBox" style="background:var(--accent-light);border:1.5px solid rgba(8,145,178,0.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text2);margin-bottom:4px">
+              <div style="font-weight:700;color:var(--accent);margin-bottom:6px">Auto-Calculated from OTE + Pay Mix</div>
+              <div style="display:flex;gap:24px;flex-wrap:wrap">
+                <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:2px">Base Salary</div><div id="calcBase" style="font-weight:700;font-size:15px;color:var(--text)">—</div></div>
+                <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:2px">Variable Target</div><div id="calcVar" style="font-weight:700;font-size:15px;color:var(--bonus-color)">—</div></div>
+                <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:2px">Total OTE</div><div id="calcOTE" style="font-weight:700;font-size:15px;color:var(--total-color)">—</div></div>
+              </div>
+            </div>
+            <div class="helper-text" style="margin-bottom:4px">Year 1 Attainment % = % of quota expected in Year 1. 100% = full OTE variable earned. Lower this for new hire ramp (e.g. 75%).</div>
           </div>
           <div id="payMixNote" style="display:none" class="helper-text"></div>
 
@@ -835,6 +854,7 @@ function onCountryChange() {
   } else {
     fxNoteEl.innerHTML = `<span>🔒</span><span>1 USD = <strong>${info.defaultFX}</strong> ${info.code} · auto-populated daily</span>`;
   }
+  if (planType === 'sales') onOTEInput();
 }
 
 function onJobFamilyChange() {
@@ -853,6 +873,7 @@ function onJobFamilyChange() {
     document.getElementById('payMixTag').textContent = `Pay Mix: ${payMix} (base/variable) — auto-set`;
     document.getElementById('payMixNote').textContent = `Pay mix ${payMix} auto-set from job family. Override if needed.`;
     document.getElementById('payMixNote').style.display = '';
+    onOTEInput();
   } else if (isOTE) {
     document.getElementById('payMixTag').textContent = 'Pay Mix: varies — set manually';
     document.getElementById('payMixNote').style.display = 'none';
@@ -864,18 +885,38 @@ function onJobFamilyChange() {
 
 function setPlanType(type) {
   planType = type;
-  document.getElementById('oteField').style.display = type === 'sales' ? '' : 'none';
-  document.getElementById('bonusTierField').style.display = type === 'corporate' ? '' : 'none';
-  document.getElementById('salesSplitRow').style.display = type === 'sales' ? '' : 'none';
-  document.getElementById('bonusStructureBox').style.display = type === 'corporate' ? '' : 'none';
-  document.getElementById('perfRow').style.display = type === 'corporate' ? '' : 'none';
-  document.getElementById('salaryTitle').textContent = type === 'sales' ? 'OTE / Sales Variable' : 'Salary & Bonus';
+  const isSales = type === 'sales';
+  // Corporate: show base salary row + bonus tier + bonus structure
+  document.getElementById('corporateBaseRow').style.display = isSales ? 'none' : '';
+  document.getElementById('bonusTierField').style.display = isSales ? 'none' : '';
+  document.getElementById('bonusStructureBox').style.display = isSales ? 'none' : '';
+  document.getElementById('perfRow').style.display = isSales ? 'none' : '';
+  // Sales: show OTE section
+  document.getElementById('oteSection').style.display = isSales ? '' : 'none';
+  document.getElementById('salaryTitle').textContent = isSales ? 'OTE / Sales Variable' : 'Salary & Bonus';
+  if (isSales) onOTEInput(); // refresh breakdown
 }
 
 function setCurrency(c) {
   displayCurrency = c;
   document.getElementById('btn-local').classList.toggle('active', c === 'local');
   document.getElementById('btn-usd').classList.toggle('active', c === 'usd');
+}
+
+function onOTEInput() {
+  const oteRaw = parseFloat((document.getElementById('oteAmount').value || '0').replace(/,/g, '')) || 0;
+  const split = parseFloat(document.getElementById('salesSplit').value) || 0.6;
+  const country = document.getElementById('country').value;
+  const cInfo = CURRENCY_INFO[country];
+  const sym = cInfo ? cInfo.symbol : '$';
+
+  const base = oteRaw * split;
+  const variable = oteRaw * (1 - split);
+
+  const fmtLocal = (n) => n > 0 ? sym + Math.round(n).toLocaleString('en-US') : '—';
+  document.getElementById('calcBase').textContent = fmtLocal(base);
+  document.getElementById('calcVar').textContent  = fmtLocal(variable);
+  document.getElementById('calcOTE').textContent  = fmtLocal(oteRaw);
 }
 
 // ── Vesting ──────────────────────────────────────────────────────────────────
@@ -959,7 +1000,16 @@ function compute() {
   const country = document.getElementById('country').value;
   const isFrance = country === 'FR';
   const startDate = new Date(document.getElementById('startDate').value);
-  const baseSalary = parseFloat(document.getElementById('baseSalary').value.replace(/,/g, '')) || 0;
+  // For sales roles, base salary is derived from OTE × pay mix split
+  // For corporate roles, base salary is entered directly
+  let baseSalary;
+  if (planType === 'sales') {
+    const oteVal = parseFloat(document.getElementById('oteAmount').value.replace(/,/g, '')) || 0;
+    const splitVal = parseFloat(document.getElementById('salesSplit').value) || 0.6;
+    baseSalary = oteVal * splitVal;
+  } else {
+    baseSalary = parseFloat(document.getElementById('baseSalary').value.replace(/,/g, '')) || 0;
+  }
   const grantValueUSD = parseFloat(document.getElementById('grantValue').value.replace(/,/g, '')) || 0;
   const sharePrice = parseFloat(document.getElementById('sharePrice').value) || 1;
   const stockGrowthPct = parseFloat(document.getElementById('stockGrowth').value) / 100;
