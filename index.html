@@ -1013,7 +1013,7 @@ function buildVestSchedule(startDate, isFrance) {
 function compute() {
   const country = document.getElementById('country').value;
   const isFrance = country === 'FR';
-  const startDate = new Date(document.getElementById('startDate').value);
+  const startDate = parseLocalDate(document.getElementById('startDate').value);
   // For sales roles, base salary is derived from OTE × pay mix split
   // For corporate roles, base salary is entered directly
   let baseSalary;
