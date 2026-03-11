@@ -1229,11 +1229,21 @@ function compute() {
         <div class="summary-sub">all comp</div>
       </div>
       <div class="summary-card">
-        <div class="summary-label">5-Year Cash</div>
-        <div class="summary-value" style="color:var(--salary-color)">${fmt(rows.reduce((s,r)=>s+r.base+r.varT,0))}</div>
-        <div class="summary-sub">base + ${isCorp ? 'bonus' : 'variable'}</div>
+        <div class="summary-label">5-Year Base</div>
+        <div class="summary-value" style="color:var(--salary-color)">${fmt(rows.reduce((s,r)=>s+r.base,0))}</div>
+        <div class="summary-sub">base salary</div>
       </div>
-      
+      <div class="summary-card">
+        <div class="summary-label">5-Year ${isCorp ? 'Bonus' : 'Variable'}</div>
+        <div class="summary-value" style="color:var(--bonus-color)">${fmt(rows.reduce((s,r)=>s+r.varT,0))}</div>
+        <div class="summary-sub">${isCorp ? '100% target' : Math.round(attainmentPct*100)+'% attainment'}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">5-Year Equity</div>
+        <div class="summary-value" style="color:var(--equity-color)">${fmt(totalEquity5)}</div>
+        <div class="summary-sub">${displayCurrency === 'usd' ? 'USD' : cInfo.code} · vesting</div>
+      </div>
+    </div>
 
     <!-- Vesting info -->
     <div class="results-section">
@@ -1264,9 +1274,9 @@ function compute() {
           <tr>
             <th>Year</th>
             <th style="color:var(--salary-color)">Base Salary</th>
-            <th style="color:var(--bonus-color)">${isCorp ? 'Bonus (C/T/O)' : 'Variable'}</th>
+            <th style="color:var(--bonus-color)">${isCorp ? 'Bonus' : 'Variable'}</th>
             <th style="color:var(--equity-color)">Equity Vesting</th>
-            <th style="color:var(--total-color)">${isCorp ? 'Total (C/T/O)' : 'Total Comp'}</th>
+            <th style="color:var(--total-color)">${isCorp ? 'Total Comp' : 'Total Comp'}</th>
           </tr>
         </thead>
         <tbody>${tableRows}</tbody>
