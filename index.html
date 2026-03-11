@@ -1197,20 +1197,18 @@ function compute() {
   }).join('');
 
   const cardTableRows = rows.map((r, i) => {
-    const bonusTxt = isCorp
-      ? `${fmtShort(r.varC)} – ${fmtShort(r.varO)}`
-      : fmtShort(r.varT);
+    const bonusTxt = fmtShort(r.varT);
     return `<tr>
       <td style="font-weight:700;color:#3b6ef5">Y${i+1} (${r.year})</td>
       <td style="font-weight:600">${fmtShort(r.base)}</td>
       <td style="color:#059669;font-weight:600">${bonusTxt}</td>
       <td style="color:#7c3aed;font-weight:600">${fmtShort(r.equity)}</td>
-      <td style="font-weight:800;color:#d97706">${isCorp ? fmtShort(r.varT)===fmtShort(r.varO) ? fmtShort(r.total_t) : fmtShort(r.total_c)+' – '+fmtShort(r.total_o) : fmtShort(r.total_t)}</td>
+      <td style="font-weight:800;color:#d97706">${fmtShort(r.total_t)}</td>
     </tr>`;
   }).join('');
 
   const fxLine = displayCurrency === 'usd' ? 'All values in USD.' : country === 'US' ? 'All values in USD.' : `Cash in ${cInfo.code} · Equity in USD converted at ${fxRate} ${cInfo.code}/USD.`;
-  const scenarioNote = isCorp ? ` Bonus scenarios: C=75%, T=100%, O=125% company funding × individual performance multiplier.` : ` Variable pay at ${Math.round(attainmentPct*100)}% attainment.`;
+
 
   document.getElementById('resultsPanel').innerHTML = `
     <div class="card-header">
