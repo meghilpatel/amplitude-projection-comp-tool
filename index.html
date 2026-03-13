@@ -294,7 +294,10 @@ input[type="date"] { color-scheme: light; }
   margin-bottom: 10px;
 }
 .chart-year-label { font-size: 11px; font-weight: 600; color: var(--text2); width: 52px; flex-shrink: 0; }
-.chart-bars { flex: 1; display: flex; height: 28px; border-radius: 6px; overflow: hidden; gap: 1px; }
+.chart-bar-track { flex: 1; display: flex; align-items: center; }
+.chart-bars { display: flex; height: 28px; border-radius: 6px; overflow: hidden; gap: 1px; flex-shrink: 0; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); min-width: 4px; }
+.chart-total-dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2.5px solid #334155; flex-shrink: 0; margin-left: 2px; }
+.chart-bar-tail { flex: 1; height: 1px; margin-left: 3px; background: repeating-linear-gradient(to right, #94a3b8 0, #94a3b8 3px, transparent 3px, transparent 7px); }
 .chart-seg {
   height: 100%;
   transition: width 0.5s ease;
@@ -1199,18 +1202,24 @@ function compute() {
   // ── Stacked bar chart data ──
   const maxTotal = Math.max(...rows.map(r => r.total_t));
 
-  const barRowsHTML = rows.map((r, i) => {
+  const const maxTotal = Math.max(...rows.map(r => r.total_t));
+  barRowsHTML = rows.map((r, i) => {
     const t = r.total_t;
+    const barWidthPct = maxTotal > 0 ? (t / maxTotal * 100).toFixed(1) : 0;
     const basePct = t > 0 ? (r.base / t * 100).toFixed(1) : 0;
     const varPct  = t > 0 ? (r.varT / t * 100).toFixed(1) : 0;
     const eqPct   = t > 0 ? (r.equity / t * 100).toFixed(1) : 0;
     return `
     <div class="chart-row">
       <div class="chart-year-label">${r.year}</div>
-      <div class="chart-bars">
-        <div class="chart-seg" style="width:${basePct}%;background:#0891b2" title="Base: ${fmt(r.base)}"></div>
-        ${parseFloat(varPct) > 0 ? '<div class="chart-seg" style="width:'+varPct+'%;background:#d97706" title="'+(isCorp?'Bonus':'Variable')+': '+fmt(r.varT)+'"></div>' : ''}
-        ${parseFloat(eqPct) > 0 ? '<div class="chart-seg" style="width:'+eqPct+'%;background:#7c3aed" title="Equity: '+fmt(r.equity)+'"></div>' : ''}
+      <div class="chart-bar-track">
+        <div class="chart-bars" style="width:${barWidthPct}%" title="Total: ${fmt(r.total_t)}">
+          <div class="chart-seg" style="width:${basePct}%;background:#0891b2" title="Base: ${fmt(r.base)}"></div>
+          ${parseFloat(varPct) > 0 ? '<div class="chart-seg" style="width:'+varPct+'%;background:#d97706" title="'+(isCorp?'Bonus':'Variable')+': '+fmt(r.varT)+'"></div>' : ''}
+          ${parseFloat(eqPct) > 0 ? '<div class="chart-seg" style="width:'+eqPct+'%;background:#7c3aed" title="Equity: '+fmt(r.equity)+'"></div>' : ''}
+        </div>
+        <div class="chart-total-dot" title="${fmt(r.total_t)}"></div>
+        <div class="chart-bar-tail"></div>
       </div>
       <div class="chart-total-label">${fmt(r.total_t)}</div>
     </div>`;
