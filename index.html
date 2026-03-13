@@ -1359,7 +1359,7 @@ function compute() {
           <div style="font-size:11px;color:var(--text3);margin-top:3px">Screenshot the card below to share with candidates. Compact, professional, print-ready.</div>
         </div>
         <div style="display:flex;gap:8px">
-          <button class="share-btn secondary" onclick="window.print()">🖨 Print</button>
+          <button class="share-btn secondary" onclick="printCard()">🖨 Print</button>
         </div>
       </div>
 
@@ -1574,6 +1574,52 @@ async function fetchLiveData() {
 onCountryChange();
 fetchLiveData();
 onIncentivePlanChange();
+
+// ── Print card in clean one-page popup ──
+function printCard() {
+  const card = document.getElementById('candidateCard');
+  if (!card) { alert('Please calculate a projection first.'); return; }
+
+  const styleContent = document.querySelector('style') ? document.querySelector('style').innerHTML : '';
+  const empName = (document.getElementById('employeeName')?.value || 'Candidate').trim();
+
+  const printWin = window.open('', '_blank', 'width=860,height=760,menubar=no,toolbar=no,location=no,status=no');
+  if (!printWin) { window.print(); return; }
+
+  printWin.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<title>Total Comp — ${empName}</title>
+<style>
+${styleContent}
+
+*, *::before, *::after {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+@page { size: letter portrait; margin: 0.3in; }
+html, body { margin: 0; padding: 12px; background: white; font-family: 'Plus Jakarta Sans', sans-serif; }
+.candidate-card { max-width: 100%; box-shadow: none !important; border: 1px solid #ddd; zoom: 0.9; }
+</style>
+</head>
+<body>
+${card.outerHTML}
+<script>
+window.onload = function() {
+  setTimeout(function() {
+    window.print();
+    setTimeout(function() { window.close(); }, 600);
+  }, 900);
+};
+<\/script>
+</body>
+</html>`);
+  printWin.document.close();
+}
 </script>
 </body>
 </html>
