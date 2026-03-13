@@ -1003,17 +1003,18 @@ function buildVestSchedule(startDate, isFrance) {
 
 // ── Compute ───────────────────────────────────────────────────────────────────
 function buildRefreshVestSchedule(grantYear, isFrance) {
-  const grantDate = new Date(grantYear, 3, 15);
-  let vestingStartDate = new Date(grantYear, 4, 15);
-  if (isFrance && vestingStartDate <= grantDate) {
-    vestingStartDate = getNextVCDAfter(grantDate);
-  }
-  let firstVestDate = getNextVCDAfter(vestingStartDate);
-  if (isFrance) {
+  const grantDate = new Date(grantYear, 3, 15); // Grant: April 15
+  let vestingStartDate, firstVestDate;
+  if (!isFrance) {
+    // Non-France refresh: vesting starts Feb 15, first vest always May 15
+    vestingStartDate = new Date(grantYear, 1, 15); // Feb 15
+    firstVestDate    = new Date(grantYear, 4, 15); // May 15
+  } else {
+    // France refresh: vesting starts May 15, 1-year cliff applies
+    vestingStartDate = new Date(grantYear, 4, 15); // May 15
     const cliff = new Date(vestingStartDate);
     cliff.setFullYear(cliff.getFullYear() + 1);
-    const cliffVCD = getVCDOnOrAfter(cliff);
-    if (cliffVCD > firstVestDate) firstVestDate = cliffVCD;
+    firstVestDate = getVCDOnOrAfter(cliff);
   }
   const schedule = [];
   let cur = firstVestDate;
