@@ -344,6 +344,29 @@ input[type="date"] { color-scheme: light; }
 .data-table tbody tr:last-child { border-bottom: none; }
 .data-table td { padding: 13px 14px; vertical-align: middle; }
 
+/* ── Breakdown table ── */
+.breakdown-table-wrap { overflow-x: auto; margin-top: 4px; }
+.breakdown-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.breakdown-table .bd-comp-col { min-width: 180px; text-align: left; padding: 12px 14px; background: var(--surface2); border-bottom: 2px solid var(--border); }
+.breakdown-table .bd-year-col { text-align: right; font-weight: 700; font-size: 14px; color: var(--accent); padding: 12px 18px; background: var(--surface2); border-bottom: 2px solid var(--border); white-space: nowrap; }
+.breakdown-table .bd-section-hdr td { padding: 8px 14px 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); background: var(--bg2); border-top: 1px solid var(--border); }
+.breakdown-table tbody tr.bd-section-hdr:first-child td { border-top: none; }
+.breakdown-table .bd-data-row td { padding: 9px 14px; border-bottom: 1px solid var(--bg2); vertical-align: middle; }
+.breakdown-table .bd-data-row:hover td { background: rgba(59,110,245,0.03); }
+.breakdown-table .bd-label { color: var(--text2); font-weight: 500; font-size: 13px; text-align: left; }
+.breakdown-table .bd-indent { padding-left: 30px !important; color: var(--text3); font-size: 12px; font-style: italic; }
+.breakdown-table .bd-val-cell { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.breakdown-table .bd-zero { color: var(--text3); font-weight: 400; }
+.breakdown-table .bd-subtotal-row td { padding: 10px 14px; background: var(--surface2); font-weight: 700; border-top: 1px solid var(--border); border-bottom: 2px solid var(--border); }
+.breakdown-table .bd-grand-row td { padding: 14px; background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border-top: 2px solid var(--accent); }
+.breakdown-table .bd-grand-label { font-weight: 700; font-size: 14px; color: var(--text1); }
+.breakdown-table .bd-salary { color: #0891b2; font-weight: 600; }
+.breakdown-table .bd-bonus { color: #d97706; font-weight: 600; }
+.breakdown-table .bd-equity { color: #7c3aed; font-weight: 600; }
+.breakdown-table .bd-cash-sub { color: #0e7490; font-weight: 700; }
+.breakdown-table .bd-eq-sub { color: #6d28d9; font-weight: 700; }
+.breakdown-table .bd-grand { color: var(--accent); font-weight: 800; font-size: 15px; }
+
 .year-chip {
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--accent-light);
@@ -1224,24 +1247,37 @@ function compute() {
     </div>`;
   }).join('');
 
-  // ── Data table rows ──
-  const tableRows = rows.map((r, i) => {
-    const vestStr = r.vestDates.length > 0
-      ? r.vestDates.map(d => d.toLocaleDateString('en-US',{month:'short',day:'numeric'})).join(', ')
-      : '—';
-    const bonusCell = `<div class="amount bonus">${fmt(r.varT)}</div>`;
-    const totalCell = `<div class="amount total">${fmt(r.total_t)}</div>`;
-    return `<tr>
-      <td><span class="year-chip">${r.year}</span></td>
-      <td><div class="amount salary">${fmt(r.base)}</div></td>
-      <td>${bonusCell}</td>
-      <td>
-        <div class="amount equity">${fmt(r.equity)}</div>
-        <div class="amount-sub">${r.vestDates.length} vests · ${vestStr}</div>
-      </td>
-      <td>${totalCell}</td>
-    </tr>`;
-  }).join('');
+  // ── Breakdown table ──
+  const refreshByGrant = refreshGrants.map(grant => years.map((year) => {
+    const yVests = grant.schedule.filter(d => d.getFullYear() === year);
+    const eqUSD = yVests.length * grant.sharesPerQuarter * sharePrice;
+    return displayCurrency === 'usd' ? eqUSD : eqUSD * fxRate;
+  }));
+  const bdCell = (val, cls) => val > 0
+    ? `<td class="bd-val-cell ${cls}">${fmt(val)}</td>`
+    : `<td class="bd-val-cell ${cls}"><span class="bd-zero">—</span></td>`;
+  const bdYearHeaders = years.map(y => `<th class="bd-year-col">${y}</th>`).join('');
+  const cashBonusLabel = isCorp ? 'Bonus (Target)' : 'Variable Comp';
+  const nhGrantRows = rows.map(r => bdCell(r.equity - r.refreshEquity, 'bd-equity')).join('');
+  const refreshGrantRowsHtml = refreshGrants.map((grant, gi) =>
+    `<tr class="bd-data-row"><td class="bd-label bd-indent">${grant.grantYear} Refresh Grant</td>` +
+    years.map((y, yi) => bdCell(refreshByGrant[gi][yi], 'bd-equity')).join('') +
+    `</tr>`
+  ).join('');
+  const breakdownTableHTML = `<div class="breakdown-table-wrap"><table class="breakdown-table">
+    <thead><tr><th class="bd-comp-col"></th>${bdYearHeaders}</tr></thead>
+    <tbody>
+      <tr class="bd-section-hdr"><td colspan="${years.length + 1}">Cash Compensation</td></tr>
+      <tr class="bd-data-row"><td class="bd-label">Base Salary</td>${rows.map(r => bdCell(r.base, 'bd-salary')).join('')}</tr>
+      <tr class="bd-data-row"><td class="bd-label">${cashBonusLabel}</td>${rows.map(r => bdCell(r.varT, 'bd-bonus')).join('')}</tr>
+      <tr class="bd-subtotal-row"><td class="bd-label">Total Cash</td>${rows.map(r => bdCell(r.base + r.varT, 'bd-cash-sub')).join('')}</tr>
+      <tr class="bd-section-hdr"><td colspan="${years.length + 1}">Equity Vesting</td></tr>
+      <tr class="bd-data-row"><td class="bd-label">New Hire Grant</td>${nhGrantRows}</tr>
+      ${refreshGrantRowsHtml}
+      <tr class="bd-subtotal-row"><td class="bd-label">Total Equity</td>${rows.map(r => bdCell(r.equity, 'bd-eq-sub')).join('')}</tr>
+      <tr class="bd-grand-row"><td class="bd-label bd-grand-label">Total Compensation</td>${rows.map(r => bdCell(r.total_t, 'bd-grand')).join('')}</tr>
+    </tbody>
+  </table></div>`;
 
   // ── Shareable candidate card ──
   const miniBarRows = rows.map((r, i) => {
@@ -1344,22 +1380,9 @@ function compute() {
 
 
     <!-- Detail table -->
-    <div style="overflow-x:auto">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th style="color:var(--salary-color)">Base Salary</th>
-            <th style="color:var(--bonus-color)">${isCorp ? 'Bonus' : 'Variable'}</th>
-            <th style="color:var(--equity-color)">Equity Vesting</th>
-            <th style="color:var(--total-color)">${isCorp ? 'Total Comp' : 'Total Comp'}</th>
-          </tr>
-        </thead>
-        <tbody>${tableRows}</tbody>
-      </table>
-    </div>
+    ${breakdownTableHTML}
 
-    <!-- Shareable candidate card -->
+        <!-- Shareable candidate card -->
     <div class="share-section">
       <div class="share-section-header">
         <div>
