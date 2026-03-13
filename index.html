@@ -1030,9 +1030,9 @@ function compute() {
   const startDate = parseLocalDate(document.getElementById('startDate').value);
   // For sales roles, base salary is derived from OTE × pay mix split
   // For corporate roles, base salary is entered directly
-  let baseSalary;
+  let baseSalary, oteVal = 0;
   if (planType === 'sales') {
-    const oteVal = parseFloat(document.getElementById('oteAmount').value.replace(/,/g, '')) || 0;
+    oteVal = parseFloat(document.getElementById('oteAmount').value.replace(/,/g, '')) || 0;
     const splitVal = parseFloat(document.getElementById('salesSplit').value) || 0.6;
     baseSalary = oteVal * splitVal;
   } else {
@@ -1206,7 +1206,7 @@ function compute() {
     const eqPct   = t > 0 ? (r.equity / t * 100).toFixed(1) : 0;
     return `
     <div class="chart-row">
-      <div class="chart-year-label">Y${i+1} · ${r.year}</div>
+      <div class="chart-year-label">${r.year}</div>
       <div class="chart-bars">
         <div class="chart-seg" style="width:${basePct}%;background:#0891b2" title="Base: ${fmt(r.base)}"></div>
         ${parseFloat(varPct) > 0 ? '<div class="chart-seg" style="width:'+varPct+'%;background:#d97706" title="'+(isCorp?'Bonus':'Variable')+': '+fmt(r.varT)+'"></div>' : ''}
@@ -1224,7 +1224,7 @@ function compute() {
     const bonusCell = `<div class="amount bonus">${fmt(r.varT)}</div>`;
     const totalCell = `<div class="amount total">${fmt(r.total_t)}</div>`;
     return `<tr>
-      <td><span class="year-chip">Y${i+1} · ${r.year}</span></td>
+      <td><span class="year-chip">${r.year}</span></td>
       <td><div class="amount salary">${fmt(r.base)}</div></td>
       <td>${bonusCell}</td>
       <td>
@@ -1242,7 +1242,7 @@ function compute() {
     const vp = t > 0 ? (r.varT/t*100).toFixed(1) : 0;
     const ep = t > 0 ? (r.equity/t*100).toFixed(1) : 0;
     return `<div class="mini-bar-row">
-      <div class="mini-bar-year">Y${i+1} · ${r.year}</div>
+      <div class="mini-bar-year">${r.year}</div>
       <div class="mini-bars">
         <div class="mini-seg" style="width:${bp}%;background:#0891b2"></div>
         ${parseFloat(vp) > 0 ? '<div class="mini-seg" style="width:'+vp+'%;background:#d97706"></div>' : ''}
@@ -1255,7 +1255,7 @@ function compute() {
   const cardTableRows = rows.map((r, i) => {
     const bonusTxt = fmtShort(r.varT);
     return `<tr>
-      <td style="font-weight:700;color:#3b6ef5">Y${i+1} (${r.year})</td>
+      <td style="font-weight:700;color:#3b6ef5">${r.year}</td>
       <td style="font-weight:600">${fmtShort(r.base)}</td>
       <td style="color:#059669;font-weight:600">${bonusTxt}</td>
       <td style="color:#7c3aed;font-weight:600">${fmtShort(r.equity)}</td>
@@ -1378,9 +1378,13 @@ function compute() {
               <div class="card-meta-value">${startDate.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
             </div>
             <div class="card-meta-item">
-              <div class="card-meta-label">Year 1 Base</div>
-              <div class="card-meta-value">${fmt(rows[0].base)}</div>
+              <div class="card-meta-label">${isCorp ? 'Base Salary' : 'OTE'}</div>
+              <div class="card-meta-value">${isCorp ? fmt(baseSalary) : fmt(oteVal)}</div>
             </div>
+            ${isCorp ? `<div class="card-meta-item">
+              <div class="card-meta-label">Bonus Target</div>
+              <div class="card-meta-value">${fmt(baseSalary * bonusTier)} (${Math.round(bonusTier*100)}%)</div>
+            </div>` : ''}
             <div class="card-meta-item">
               <div class="card-meta-label">New Hire Grant</div>
               <div class="card-meta-value">$${Math.round(grantValueUSD).toLocaleString('en-US')}</div>
