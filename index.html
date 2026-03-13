@@ -1202,7 +1202,6 @@ function compute() {
   // ── Stacked bar chart data ──
   const maxTotal = Math.max(...rows.map(r => r.total_t));
 
-  const const maxTotal = Math.max(...rows.map(r => r.total_t));
   barRowsHTML = rows.map((r, i) => {
     const t = r.total_t;
     const barWidthPct = maxTotal > 0 ? (t / maxTotal * 100).toFixed(1) : 0;
