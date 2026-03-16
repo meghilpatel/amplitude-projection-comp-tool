@@ -286,13 +286,18 @@ input[type="date"] { color-scheme: light; }
 .results-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 14px; }
 
 /* ── Stacked Bar Chart ── */
-.chart-wrap { display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: 32px; padding: 16px 24px 0; }
-.chart-col { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 80px; flex-shrink: 0; }
-.chart-col-total { font-size: 11px; font-weight: 700; color: var(--text2); white-space: nowrap; text-align: center; }
-.chart-col-bar-area { display: flex; align-items: flex-end; width: 100%; }
-.chart-bars-v { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 6px 6px 0 0; overflow: hidden; gap: 2px; transition: height 0.6s cubic-bezier(0.4,0,0.2,1); }
-.chart-seg-v { width: 100%; }
-.chart-col-year { font-size: 12px; font-weight: 700; color: var(--accent); text-align: center; padding-top: 6px; border-top: 2px solid var(--border); width: 100%; }
+.chart-wrap { }
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.chart-year-label { font-size: 11px; font-weight: 600; color: var(--text2); width: 52px; flex-shrink: 0; }
+.chart-bar-track { flex: 1; display: flex; align-items: center; }
+.chart-bars { display: flex; height: 28px; border-radius: 6px; overflow: hidden; gap: 1px; flex-shrink: 0; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); min-width: 4px; }
+.chart-total-dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2.5px solid #334155; flex-shrink: 0; margin-left: 2px; }
+.chart-bar-tail { flex: 1; height: 1px; margin-left: 3px; background: repeating-linear-gradient(to right, #94a3b8 0, #94a3b8 3px, transparent 3px, transparent 7px); }
 .chart-seg {
   height: 100%;
   transition: width 0.5s ease;
@@ -499,13 +504,12 @@ input[type="date"] { color-scheme: light; }
 /* Mini chart in card */
 .mini-chart { margin-bottom: 24px; }
 .mini-chart-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 14px; }
-.mini-chart-cols { display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: 16px; padding: 8px 8px 0; }
-.mini-col { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 52px; flex-shrink: 0; }
-.mini-col-total { font-size: 9px; font-weight: 700; color: var(--text2); white-space: nowrap; text-align: center; }
-.mini-col-bar-area { display: flex; align-items: flex-end; width: 100%; }
-.mini-bars-v { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 4px 4px 0 0; overflow: hidden; gap: 1px; }
-.mini-seg-v { width: 100%; }
-.mini-col-year { font-size: 10px; font-weight: 700; color: var(--accent); text-align: center; padding-top: 4px; border-top: 1.5px solid var(--border); width: 100%; }
+.mini-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.mini-bar-year { font-size: 11px; font-weight: 700; color: var(--text2); width: 44px; flex-shrink: 0; }
+.mini-bars { flex: 1; display: flex; height: 22px; border-radius: 5px; overflow: hidden; gap: 1px; }
+.mini-seg { height: 100%; }
+.mini-total { font-size: 12px; font-weight: 700; color: var(--text); width: 90px; text-align: right; flex-shrink: 0; }
+
 /* Card summary grid */
 .card-summary-grid {
   display: grid;
@@ -1223,26 +1227,23 @@ function compute() {
 
   barRowsHTML = rows.map((r, i) => {
     const t = r.total_t;
-    const BAR_MAX = 160;
-    const barH = maxTotal > 0 ? Math.round(t / maxTotal * BAR_MAX) : 0;
-    let hBase = t > 0 ? Math.round(r.base / t * barH) : 0;
-    let hVar  = t > 0 ? Math.round(r.varT / t * barH) : 0;
-    let hEq   = barH - hBase - hVar;
-    const MINH = 5;
-    if (r.varT > 0 && hVar > 0 && hVar < MINH) { hBase -= (MINH - hVar); hVar = MINH; }
-    if (r.equity > 0 && hEq > 0 && hEq < MINH) { hBase -= (MINH - hEq); hEq = MINH; }
-    hBase = Math.max(1, hBase);
+    const barWidthPct = maxTotal > 0 ? (t / maxTotal * 100).toFixed(1) : 0;
+    const basePct = t > 0 ? (r.base / t * 100).toFixed(1) : 0;
+    const varPct  = t > 0 ? (r.varT / t * 100).toFixed(1) : 0;
+    const eqPct   = t > 0 ? (r.equity / t * 100).toFixed(1) : 0;
     return `
-    <div class="chart-col">
-      <div class="chart-col-total">${fmt(r.total_t)}</div>
-      <div class="chart-col-bar-area">
-        <div class="chart-bars-v" style="height:${barH}px" title="Total: ${fmt(t)}">
-          ${r.equity > 0 ? '<div class="chart-seg-v" style="height:'+hEq+'px;background:#7c3aed" title="Equity: '+fmt(r.equity)+'"></div>' : ''}
-          ${r.varT > 0 ? '<div class="chart-seg-v" style="height:'+hVar+'px;background:#d97706" title="'+(isCorp?'Bonus':'Variable')+': '+fmt(r.varT)+'"></div>' : ''}
-          <div class="chart-seg-v" style="height:${hBase}px;background:#0891b2" title="Base: ${fmt(r.base)}"></div>
+    <div class="chart-row">
+      <div class="chart-year-label">${r.year}</div>
+      <div class="chart-bar-track">
+        <div class="chart-bars" style="width:${barWidthPct}%" title="Total: ${fmt(r.total_t)}">
+          <div class="chart-seg" style="width:${basePct}%;background:#0891b2" title="Base: ${fmt(r.base)}"></div>
+          ${parseFloat(varPct) > 0 ? '<div class="chart-seg" style="width:'+varPct+'%;background:#d97706" title="'+(isCorp?'Bonus':'Variable')+': '+fmt(r.varT)+'"></div>' : ''}
+          ${parseFloat(eqPct) > 0 ? '<div class="chart-seg" style="width:'+eqPct+'%;background:#7c3aed" title="Equity: '+fmt(r.equity)+'"></div>' : ''}
         </div>
+        <div class="chart-total-dot" title="${fmt(r.total_t)}"></div>
+        <div class="chart-bar-tail"></div>
       </div>
-      <div class="chart-col-year">${r.year}</div>
+      <div class="chart-total-label">${fmt(r.total_t)}</div>
     </div>`;
   }).join('');
 
@@ -1279,29 +1280,21 @@ function compute() {
   </table></div>`;
 
   // ── Shareable candidate card ──
-  const miniBarRows = '<div class="mini-chart-cols">' + rows.map((r, i) => {
+  const const const const const miniBarRows = rows.map((r, i) => {
     const t = r.total_t;
-    const MINI_MAX = 100;
-    const barH = maxTotal > 0 ? Math.round(t / maxTotal * MINI_MAX) : 0;
-    let hBase = t > 0 ? Math.round(r.base / t * barH) : 0;
-    let hVar  = t > 0 ? Math.round(r.varT / t * barH) : 0;
-    let hEq   = barH - hBase - hVar;
-    const MINH = 4;
-    if (r.varT > 0 && hVar > 0 && hVar < MINH) { hBase -= (MINH - hVar); hVar = MINH; }
-    if (r.equity > 0 && hEq > 0 && hEq < MINH) { hBase -= (MINH - hEq); hEq = MINH; }
-    hBase = Math.max(1, hBase);
-    return `<div class="mini-col">
-      <div class="mini-col-total">${fmtShort(t)}</div>
-      <div class="mini-col-bar-area">
-        <div class="mini-bars-v" style="height:${barH}px">
-          ${r.equity > 0 ? '<div class="mini-seg-v" style="height:'+hEq+'px;background:#7c3aed"></div>' : ''}
-          ${r.varT > 0 ? '<div class="mini-seg-v" style="height:'+hVar+'px;background:#d97706"></div>' : ''}
-          <div class="mini-seg-v" style="height:${hBase}px;background:#0891b2"></div>
-        </div>
+    const bp = t > 0 ? (r.base/t*100).toFixed(1) : 0;
+    const vp = t > 0 ? (r.varT/t*100).toFixed(1) : 0;
+    const ep = t > 0 ? (r.equity/t*100).toFixed(1) : 0;
+    return `<div class="mini-bar-row">
+      <div class="mini-bar-year">${r.year}</div>
+      <div class="mini-bars">
+        <div class="mini-seg" style="width:${bp}%;background:#0891b2"></div>
+        ${parseFloat(vp) > 0 ? '<div class="mini-seg" style="width:'+vp+'%;background:#d97706"></div>' : ''}
+        ${parseFloat(ep) > 0 ? '<div class="mini-seg" style="width:'+ep+'%;background:#7c3aed"></div>' : ''}
       </div>
-      <div class="mini-col-year">${r.year}</div>
+      <div class="mini-total">${fmtShort(t)}</div>
     </div>`;
-  }).join('') + '</div>';
+  }).join('');
 
   const cardTableRows = rows.map((r, i) => {
     const bonusTxt = fmtShort(r.varT);
