@@ -286,12 +286,12 @@ input[type="date"] { color-scheme: light; }
 .results-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 14px; }
 
 /* ── Stacked Bar Chart ── */
-.chart-wrap { display: flex; flex-direction: row; align-items: flex-end; gap: 8px; padding: 0 8px; height: 200px; }
-.chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; min-width: 0; }
+.chart-wrap { display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: 32px; padding: 16px 24px 0; }
+.chart-col { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 80px; flex-shrink: 0; }
 .chart-col-total { font-size: 11px; font-weight: 700; color: var(--text2); white-space: nowrap; text-align: center; }
-.chart-col-bar-area { flex: 1; display: flex; align-items: flex-end; width: 100%; }
-.chart-bars-v { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 6px 6px 0 0; overflow: hidden; gap: 1px; min-height: 4px; transition: height 0.6s cubic-bezier(0.4,0,0.2,1); }
-.chart-seg-v { flex-shrink: 0; }
+.chart-col-bar-area { display: flex; align-items: flex-end; width: 100%; }
+.chart-bars-v { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 6px 6px 0 0; overflow: hidden; gap: 2px; transition: height 0.6s cubic-bezier(0.4,0,0.2,1); }
+.chart-seg-v { width: 100%; }
 .chart-col-year { font-size: 12px; font-weight: 700; color: var(--accent); text-align: center; padding-top: 6px; border-top: 2px solid var(--border); width: 100%; }
 .chart-seg {
   height: 100%;
@@ -499,12 +499,12 @@ input[type="date"] { color-scheme: light; }
 /* Mini chart in card */
 .mini-chart { margin-bottom: 24px; }
 .mini-chart-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 14px; }
-.mini-chart-cols { display: flex; flex-direction: row; align-items: flex-end; gap: 8px; padding: 0 4px; height: 120px; }
-.mini-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; min-width: 0; }
+.mini-chart-cols { display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: 16px; padding: 8px 8px 0; }
+.mini-col { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 52px; flex-shrink: 0; }
 .mini-col-total { font-size: 9px; font-weight: 700; color: var(--text2); white-space: nowrap; text-align: center; }
-.mini-col-bar-area { flex: 1; display: flex; align-items: flex-end; width: 100%; }
-.mini-bars-v { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 4px 4px 0 0; overflow: hidden; gap: 1px; min-height: 2px; }
-.mini-seg-v { flex-shrink: 0; }
+.mini-col-bar-area { display: flex; align-items: flex-end; width: 100%; }
+.mini-bars-v { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 4px 4px 0 0; overflow: hidden; gap: 1px; }
+.mini-seg-v { width: 100%; }
 .mini-col-year { font-size: 10px; font-weight: 700; color: var(--accent); text-align: center; padding-top: 4px; border-top: 1.5px solid var(--border); width: 100%; }
 /* Card summary grid */
 .card-summary-grid {
@@ -1223,18 +1223,23 @@ function compute() {
 
   barRowsHTML = rows.map((r, i) => {
     const t = r.total_t;
-    const bHPct = maxTotal > 0 ? (t / maxTotal * 100).toFixed(1) : 0;
-    const bF = t > 0 ? Math.round(r.base / t * 1000) : 0;
-    const vF = t > 0 ? Math.round(r.varT / t * 1000) : 0;
-    const eF = 1000 - bF - vF;
+    const BAR_MAX = 160;
+    const barH = maxTotal > 0 ? Math.round(t / maxTotal * BAR_MAX) : 0;
+    let hBase = t > 0 ? Math.round(r.base / t * barH) : 0;
+    let hVar  = t > 0 ? Math.round(r.varT / t * barH) : 0;
+    let hEq   = barH - hBase - hVar;
+    const MINH = 5;
+    if (r.varT > 0 && hVar > 0 && hVar < MINH) { hBase -= (MINH - hVar); hVar = MINH; }
+    if (r.equity > 0 && hEq > 0 && hEq < MINH) { hBase -= (MINH - hEq); hEq = MINH; }
+    hBase = Math.max(1, hBase);
     return `
     <div class="chart-col">
       <div class="chart-col-total">${fmt(r.total_t)}</div>
       <div class="chart-col-bar-area">
-        <div class="chart-bars-v" style="height:${bHPct}%" title="Total: ${fmt(t)}">
-          ${eF > 0 ? '<div class="chart-seg-v" style="flex:'+eF+';background:#7c3aed" title="Equity: '+fmt(r.equity)+'"></div>' : ''}
-          ${vF > 0 ? '<div class="chart-seg-v" style="flex:'+vF+';background:#d97706" title="'+(isCorp?'Bonus':'Variable')+': '+fmt(r.varT)+'"></div>' : ''}
-          <div class="chart-seg-v" style="flex:${bF};background:#0891b2" title="Base: ${fmt(r.base)}"></div>
+        <div class="chart-bars-v" style="height:${barH}px" title="Total: ${fmt(t)}">
+          ${r.equity > 0 ? '<div class="chart-seg-v" style="height:'+hEq+'px;background:#7c3aed" title="Equity: '+fmt(r.equity)+'"></div>' : ''}
+          ${r.varT > 0 ? '<div class="chart-seg-v" style="height:'+hVar+'px;background:#d97706" title="'+(isCorp?'Bonus':'Variable')+': '+fmt(r.varT)+'"></div>' : ''}
+          <div class="chart-seg-v" style="height:${hBase}px;background:#0891b2" title="Base: ${fmt(r.base)}"></div>
         </div>
       </div>
       <div class="chart-col-year">${r.year}</div>
@@ -1276,17 +1281,22 @@ function compute() {
   // ── Shareable candidate card ──
   const miniBarRows = '<div class="mini-chart-cols">' + rows.map((r, i) => {
     const t = r.total_t;
-    const mH = maxTotal > 0 ? (t / maxTotal * 100).toFixed(1) : 0;
-    const bF = t > 0 ? Math.round(r.base / t * 1000) : 0;
-    const vF = t > 0 ? Math.round(r.varT / t * 1000) : 0;
-    const eF = 1000 - bF - vF;
+    const MINI_MAX = 100;
+    const barH = maxTotal > 0 ? Math.round(t / maxTotal * MINI_MAX) : 0;
+    let hBase = t > 0 ? Math.round(r.base / t * barH) : 0;
+    let hVar  = t > 0 ? Math.round(r.varT / t * barH) : 0;
+    let hEq   = barH - hBase - hVar;
+    const MINH = 4;
+    if (r.varT > 0 && hVar > 0 && hVar < MINH) { hBase -= (MINH - hVar); hVar = MINH; }
+    if (r.equity > 0 && hEq > 0 && hEq < MINH) { hBase -= (MINH - hEq); hEq = MINH; }
+    hBase = Math.max(1, hBase);
     return `<div class="mini-col">
       <div class="mini-col-total">${fmtShort(t)}</div>
       <div class="mini-col-bar-area">
-        <div class="mini-bars-v" style="height:${mH}%">
-          ${eF > 0 ? '<div class="mini-seg-v" style="flex:'+eF+';background:#7c3aed"></div>' : ''}
-          ${vF > 0 ? '<div class="mini-seg-v" style="flex:'+vF+';background:#d97706"></div>' : ''}
-          <div class="mini-seg-v" style="flex:${bF};background:#0891b2"></div>
+        <div class="mini-bars-v" style="height:${barH}px">
+          ${r.equity > 0 ? '<div class="mini-seg-v" style="height:'+hEq+'px;background:#7c3aed"></div>' : ''}
+          ${r.varT > 0 ? '<div class="mini-seg-v" style="height:'+hVar+'px;background:#d97706"></div>' : ''}
+          <div class="mini-seg-v" style="height:${hBase}px;background:#0891b2"></div>
         </div>
       </div>
       <div class="mini-col-year">${r.year}</div>
