@@ -1280,7 +1280,7 @@ function compute() {
   </table></div>`;
 
   // ── Shareable candidate card ──
-  const const const const const miniBarRows = rows.map((r, i) => {
+  const miniBarRows = rows.map((r, i) => {
     const t = r.total_t;
     const bp = t > 0 ? (r.base/t*100).toFixed(1) : 0;
     const vp = t > 0 ? (r.varT/t*100).toFixed(1) : 0;
