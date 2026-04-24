@@ -1370,7 +1370,7 @@ function compute() {
           <span>⚠️</span>
           <span>
             Projections are illustrative only. Equity values assume ${document.getElementById('stockGrowth').value}% annual stock price growth; actual values may vary.
-            ${isCorp ? ' Corporate bonus is semi-annual (H1 paid Sep, H2 paid Mar) and depends on company and individual performance. Bonus scenarios shown at 75%, 100%, and 125% company funding.' : ' Variable pay shown at stated attainment; actual payout depends on quota achievement.'}
+            ${isCorp ? ' Corporate bonus is semi-annual (H1 paid Sep, H2 paid Mar) and depends on company and individual performance. Bonus scenarios shown are at 100% company funding which may vary.' : ' Variable pay shown at stated attainment; actual payout depends on quota achievement.'}
             Salary growth assumes ${document.getElementById('salaryGrowth').value}% annually. All figures in ${curCode}${country !== 'US' && displayCurrency !== 'usd' ? '; equity converted from USD at ' + fxRate + ' ' + cInfo.code + '/USD' : ''}.
             ${isFrance ? ' France: 1-year vesting cliff per local regulations.' : ''}
             This is not a compensation guarantee or offer.
